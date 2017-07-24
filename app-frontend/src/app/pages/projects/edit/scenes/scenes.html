@@ -1,0 +1,54 @@
+<div class="sidebar-header">
+  <a class="btn sidebar-header-nav-btn" ui-sref="projects.edit">
+    <i class="icon-arrow-left"></i>
+  </a>
+  <h5 class="sidebar-title">Add or Remove Scenes</h5>
+</div>
+<div class="sidebar-project">
+  <ul class="sidebar-list">
+    <li ng-if="$ctrl.$parent.project.isAOIProject && $ctrl.$parent.pendingSceneList.length">
+      <div class="alert alert-secondary">
+        <div class="alert-message">{{$ctrl.$parent.pendingSceneList.length}} scenes awaiting approval</div>
+        <button class="alert-action" ui-sref="projects.edit.aoi-approve">Review Scenes</button>
+      </div>
+    </li>
+    <li>
+      <div class="label">
+        <span class="text">Remove scenes by clicking <i class="icon-trash"></i>
+        or browse scenes to add.</span>
+      </div>
+      <button type="button"
+              class="btn btn-primary fixedwidth"
+              ui-sref="projects.edit.browse({sceneid: null})">
+        Browse scenes to add
+      </button>
+    </li>
+  </ul>
+</div>
+<div class="list-group" ng-if="$ctrl.$parent.sceneList">
+  <div class="list-group-item">
+    <strong class="color-dark">
+      <ng-pluralize count="$ctrl.$parent.sceneList.length"
+                    when="{'0': 'No scenes',
+                          'one': '1 scene',
+                          'other': '{} scenes'
+                          }">
+      </ng-pluralize>
+    </strong>
+    in this project
+  </div>
+</div>
+<div class="sidebar-scrollable">
+  <div class="list-group">
+    <rf-scene-item
+        scene="scene"
+        ng-click="$ctrl.openSceneDetailModal(scene)"
+        ng-mouseover="$ctrl.$parent.setHoveredScene(scene)"
+        ng-mouseleave="$ctrl.$parent.removeHoveredScene()"
+        ng-repeat="scene in $ctrl.$parent.sceneList track by scene.id">
+      <button class="btn btn-square btn-danger" ng-click="$ctrl.removeSceneFromProject(scene, $event)">
+        <i class="icon-trash"></i>
+      </button>
+    </rf-scene-item>
+  </div>
+</div>

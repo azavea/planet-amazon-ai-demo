@@ -1,0 +1,71 @@
+<div class="navbar primary-navbar row no-margin" ng-show="!$ctrl.loadError"  ng-if="!$ctrl.$state.$current.name.includes('share')">
+  <!-- Nav Left -->
+  <div class="navbar-section">
+    <a href
+       ui-sref="home"
+       class="brand">
+      <img ng-attr-src="{{$ctrl.assetLogo}}">
+    </a>
+    <span class="navbar-vertical-divider"></span>
+    <nav>
+      <a href
+         ng-class="{'icon': $ctrl.isInProject()}"
+         ui-sref="home"
+         ui-sref-active="active">
+        <i class="icon-home"></i>
+        <span ng-if="!$ctrl.isInProject()">Home</span>
+      </a>
+      <a href
+         ng-class="{'icon': $ctrl.isInProject(),
+                    'active': $ctrl.$state.includes('projects') }"
+         ui-sref="projects.list">
+        <i class="icon-project"></i>
+        <span ng-if="!$ctrl.isInProject()">Projects</span>
+      </a>
+      <a href
+         ng-class="{'icon': $ctrl.isInProject(),
+                    'active': $ctrl.$state.includes('imports') }"
+         ui-sref="imports">
+        <i class="icon-imports"></i>
+        <span ng-if="!$ctrl.isInProject()">Imports</span>
+      </a>
+      <a href
+         feature-flag="tools-ui"
+         ui-sref="market.search"
+         ng-class="{
+                   active: $ctrl.$state.$current.name.includes('market'),
+                   icon: $ctrl.isInProject()
+                   }">
+        <i class="icon-model"></i>
+        <span ng-if="!$ctrl.isInProject()">Tools</span>
+      </a>
+
+      <span ui-view="navmenu"></span>
+    </nav>
+  </div>
+
+  <!-- Nav Right -->
+  <div class="row no-margin columns-center column align-right navbar-section">
+    <nav>
+      <div ng-if="$ctrl.authService.isLoggedIn" uib-dropdown class="dropdown-my-account" on-toggle="toggled($ctrl.optionsOpen)">
+        <a href uib-dropdown-toggle>
+          <img ng-if="$ctrl.authService.profile().picture" class="avatar" ng-src="{{$ctrl.authService.profile().picture}}">
+          <div class="avatar image-placeholder" ng-if="$ctrl.authService.profile() && !$ctrl.authService.profile().picture"></div>
+          <span class="username">{{$ctrl.authService.profile().nickname}}</span>
+          <i class="icon-caret-down"></i>
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="dLabel">
+          <li>
+            <a href ui-sref="settings.profile">
+              <i class="icon-settings"></i> Settings
+            </a>
+          </li>
+          <li role="separator" class="divider"></li>
+          <li><a href ng-click="$ctrl.logout()">
+            <i class="icon-cancel"></i> Sign out
+          </a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</div>

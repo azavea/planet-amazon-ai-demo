@@ -1,0 +1,46 @@
+<div ui-view class="sidebar flex-fill">
+  <div class="sidebar-project">
+    <div class="sidebar-header">
+      <a class="btn sidebar-header-nav-btn" ui-sref="projects.edit.color">
+        <i class="icon-arrow-left"></i>
+      </a>
+      <h5 class="sidebar-title">Advanced Color Correction</h5>
+    </div>
+
+    <ul class="sidebar-list">
+      <li>
+        <div class="label">
+          <span class="text">Select scenes to adjust color and click <strong>Color Correct</strong></span>
+        </div>
+        <div class="btn-group fixedwidth">
+          <button type="button"
+                  class="btn btn-primary"
+                  style="width: 12rem;"
+                  ng-disabled="$ctrl.selectedScenes.size === 0"
+                  ui-sref="projects.edit.advancedcolor.adjust">
+            Color Correct
+          </button>
+          <button type="button"
+                  class="btn dropdown-toggle"
+                  ng-class="{'btn-secondary': !$ctrl.shouldSelectAll()}"
+                  ng-click="$ctrl.onToggleSelection()">
+            <i class="icon-check"></i>
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="sidebar-scrollable">
+    <div class="list-group">
+      <rf-scene-item
+          scene="scene"
+          selectable
+          selected="$ctrl.isSelected(scene)"
+          on-select="$ctrl.setSelected(scene, selected)"
+          ng-mouseover="$ctrl.$parent.setHoveredScene(scene)"
+          ng-mouseleave="$ctrl.$parent.removeHoveredScene()"
+          ng-repeat="scene in $ctrl.$parent.sceneList track by scene.id">
+      </rf-scene-item>
+    </div>
+  </div>
+</div>

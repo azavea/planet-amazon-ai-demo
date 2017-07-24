@@ -1,0 +1,327 @@
+@mixin button-states($color) {
+  &:hover, &.hover,
+  &:active, &.active, {
+    background-color: darken($color, 5%);
+    border-color: darken($color, 5%);
+  }
+
+  &:active, &.active {
+    box-shadow: inset 0 2px 2px 0px rgba(black, .2);
+  }
+
+  &:focus, &.focus {
+    outline: none;
+    box-shadow: 0 1px 2px -1px $brand-primary;
+  }
+
+  // Note: <buttons> and <a> handle active+focus differently. This will normalize behaviour.
+  &:focus:active {
+    box-shadow: inset 0 2px 2px 0px rgba(black, .2);
+  }
+
+  &:disabled, &.disabled, &[disabled] {
+    opacity: .5;
+    cursor: not-allowed;
+  }
+}
+
+@mixin ghost-button-states($color, $textColor) {
+  &:hover, &.hover,
+  &:active, &.active, {
+    color: $textColor;
+    background-color: rgba($color, .25);
+    border-color: darken($color, 5%);
+  }
+
+  &:active, &.active {
+    box-shadow: inset 0 2px 2px 0px rgba(black, .2);
+  }
+
+  &:focus, &.focus {
+    outline: none;
+    box-shadow: 0 1px 2px -1px $brand-primary;
+  }
+
+  // Note: <buttons> and <a> handle active+focus differently. This will normalize behaviour.
+  &:focus:active {
+    box-shadow: inset 0 2px 2px 0px rgba(black, .2);
+  }
+
+  &:disabled, &.disabled, &[disabled] {
+    opacity: .5;
+    cursor: not-allowed;
+  }
+}
+
+.btn {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  outline: 0;
+  border: none;
+  padding: .8rem 2rem;
+  font-weight: 500;
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  border-radius: $border-radius-base;
+  user-select: none;
+  background: #fff;
+  border: 1px solid $shade-light;
+  color: $shade-light;;
+
+  &:hover, &.hover,
+  &:active, &.active, {
+    color: #fff;
+    background-color: lighten($shade-light, 10%);
+  }
+
+  &:active, &.active {
+    box-shadow: inset 0 2px 2px 0px rgba(black, .2);
+  }
+
+  &:focus, &.focus {
+    outline: none;
+    box-shadow: 0 1px 2px -1px $brand-primary;
+  }
+
+  // Note: <buttons> and <a> handle active+focus differently. This will normalize behaviour.
+  &:focus:active {
+    box-shadow: inset 0 2px 2px 0px rgba(black, .2);
+  }
+
+  &:disabled, &.disabled, &[disabled] {
+    opacity: .5;
+    cursor: not-allowed;
+  }
+}
+
+/* 
+ * Solid bg-color buttons
+ */
+.btn-default {
+  background: $shade-normal;
+  border-color: darken($shade-normal, 5%);
+  color: #fff;
+
+  @include button-states($shade-normal);
+}
+
+.btn-light {
+  background: $shade-light;
+  border-color: darken($shade-light, 5%);
+  color: #fff;
+
+  @include button-states($shade-light);
+}
+
+.btn-primary {
+  background: $brand-primary;
+  border-color: darken($brand-primary, 5%);
+  color: #fff;
+
+  @include button-states($brand-primary);
+}
+
+.btn-secondary {
+  background: $brand-secondary;
+  border-color: darken($brand-secondary, 5%);
+  color: #fff;
+
+  @include button-states($brand-secondary);
+}
+
+.btn-tertiary {
+  background: $brand-tertiary;
+  border-color: darken($brand-tertiary, 5%);
+  color: #fff;
+
+  @include button-states($brand-tertiary);
+}
+
+.btn-warning {
+  background: $warning;
+  border-color: darken($warning, 5%);
+  color: #fff;
+
+  @include button-states($warning);
+}
+
+.btn-danger {
+  background: $danger;
+  border-color: darken($danger, 5%);
+  color: #fff;
+
+  @include button-states($danger);
+}
+
+/* 
+ * Ghost buttons, borders only
+ */
+.btn-ghost {
+  background-color: transparent;
+}
+
+.btn-ghost-white {
+  background-color: transparent;
+  color: #fff;
+  border-color: #fff;
+
+  @include ghost-button-states(#fff, #fff);
+}
+
+.btn-ghost-default {
+  background-color: transparent;
+  color: $shade-normal;
+  border-color: $shade-normal;
+
+  @include ghost-button-states($shade-normal, #fff);
+}
+
+/* 
+ * Button styled link a link
+ */
+.btn-link {
+  border-color: transparent;
+  color: $brand-primary;
+  background-color: transparent;
+
+  &:hover, &.hover,
+  &:active, &.active, {
+    background-color: transparent;
+    border-color: transparent;
+    color: darken($brand-primary, 10%);
+    text-decoration: underline;
+  }
+}
+
+.btn-tag {
+  background-color: $brand-primary;
+  color: #fff;
+  font-weight: 700;
+  padding: 0.5rem;
+  border-radius: 1px;
+}
+
+
+/*
+ * Button Sizes
+ */
+.btn-tiny {
+  font-size: 1.2rem;
+  padding: .7rem .5rem;
+}
+
+.btn-small {
+  font-size: 1.3rem;
+  padding: .8rem 1rem;
+}
+
+.btn-large {
+  padding: 1.6rem 2rem;
+}
+
+.btn-square {
+  padding: 1rem;
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+}
+
+/*
+ * Button toggles
+ */
+.btn-toggle {
+  background : $shade-dark;
+  border-color: darken($shade-dark, 5%);
+  color: $text-base;
+
+  &:hover, &.hover,
+  &:active {
+    background-color: darken($shade-dark, 5%);
+    border-color: darken($shade-dark, 5%);
+  }
+
+  &:active {
+    box-shadow: inset 0 2px 2px 0px rgba(black, .2);
+  }
+
+  &:focus, &.focus {
+    outline: none;
+    box-shadow: 0 1px 2px -1px $brand-primary;
+  }
+
+  // Note: <buttons> and <a> handle active+focus differently. This will normalize behaviour.
+  &:focus:active {
+    box-shadow: inset 0 2px 2px 0px rgba(black, .2);
+  }
+
+  &:disabled, &.disabled {
+    opacity: .5;
+  }
+
+  &.active {
+    background: $brand-primary;
+    border-color: darken($brand-primary, 5%);
+    color: #fff;
+    box-shadow: none;
+
+    &:hover, &.hover,
+    &:active {
+      background-color: darken($brand-primary, 5%);
+      border-color: darken($brand-primary, 5%);
+    }
+
+    &:active {
+      box-shadow: inset 0 2px 2px 0px rgba(black, .2);
+    }
+  }
+}
+
+
+/*
+ * Button groups
+ */
+.btn-group {
+  display: flex !important;
+
+  .btn {
+    margin: 0 !important;
+    flex-grow: 1;
+
+    // FIX ISSUE WHERE ONLY ONE BUTTON HAS MESSED UP RADIUS
+    &:not(:last-child):not(.dropdown-toggle) {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    &:last-child:not(:first-child) {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    &:not(:first-child):not(:last-child):not(.dropdown-toggle) {
+      border-radius: 0;
+    }
+  }
+
+
+  .btn ~ .btn {
+    margin-left: -1px !important;
+  }
+
+  .dropdown-label {
+    text-align: left;
+    font-weight: normal;
+  }
+
+  // changes padding on toggle for dropdown btn-groups
+  .dropdown-toggle {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+}

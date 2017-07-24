@@ -1,0 +1,31 @@
+<div class="sidebar-project">
+  <div class="sidebar-header">
+    <a class="btn sidebar-header-nav-btn" ui-sref="projects.edit">
+      <i class="icon-arrow-left"></i>
+    </a>
+    <h5 class="sidebar-title">Color Mode</h5>
+  </div>
+
+  <ul class="sidebar-list">
+    <li>
+      <div class="label">
+        <span class="text">Color modes determine how various sensor bands are translated into visible color.</span>
+      </div>
+    </li>
+  </ul>
+</div>
+<div class="sidebar-scrollable">
+  <div class="list-group">
+    <div class="list-group-item"
+         ng-repeat="(key, composite) in $ctrl.$parent.unifiedComposites track by $index">
+      <div style="flex-direction: row;">
+        <span title="{{composite.label}}"><strong>{{composite.label}}</strong></span>
+      </div>
+      <div class="list-group-right">
+        <rf-toggle value="$ctrl.isActiveColorMode(key)" on-change="$ctrl.setBands(key)">
+          <i class="icon-check"></i>
+        </rf-toggle>
+      </div>
+    </div>
+  </div>
+</div>

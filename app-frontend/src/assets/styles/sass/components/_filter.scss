@@ -1,0 +1,39 @@
+.filter {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  font-size: 1.2rem;
+  &:not(:last-child) {
+    margin-bottom: 1.2rem;
+  }
+  & > *:not(:last-child) {
+    margin-right: 1.2rem !important;
+  }
+  label {
+    color: $shade-light;
+    width: 80px;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+}
+
+.filter-item {
+  display: block;
+}
+
+.month-filter {
+  display: flex;
+  flex-wrap: wrap;
+
+  .btn {
+    flex-basis: 24%;
+    margin: .5%;
+  }
+}
+
+.tag-filter {
+
+  .btn {
+    margin: .5%;
+  }
+}
