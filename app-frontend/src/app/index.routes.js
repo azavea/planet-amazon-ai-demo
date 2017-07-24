@@ -1,12 +1,6 @@
 /* eslint max-len: 0 */
 import rootTpl from './pages/root/root.html';
 import loginTpl from './pages/login/login.html';
-import labTpl from './pages/lab/lab.html';
-import labEditTpl from './pages/lab/edit/edit.html';
-import labRunTpl from './pages/lab/run/run.html';
-import marketTpl from './pages/market/market.html';
-import marketSearchTpl from './pages/market/search/search.html';
-import marketToolTpl from './pages/market/tool/tool.html';
 
 import projectsTpl from './pages/projects/projects.html';
 import projectsNavbarTpl from './pages/projects/navbar/navbar.html';
@@ -37,11 +31,6 @@ import connectionsTpl from './pages/settings/connections/connections.html';
 import errorTpl from './pages/error/error.html';
 import shareTpl from './pages/share/share.html';
 import homeTpl from './pages/home/home.html';
-import importsTpl from './pages/imports/imports.html';
-import importsDatasourcesTpl from './pages/imports/datasources/datasources.html';
-import importsDatasourcesListTpl from './pages/imports/datasources/list/list.html';
-import importsDatasourcesDetailTpl from './pages/imports/datasources/detail/detail.html';
-import datasourceColorCompositesTpl from './pages/imports/datasources/detail/colorComposites/colorComposites.html';
 
 function projectEditStates($stateProvider) {
     let addScenesQueryParams = [
@@ -63,7 +52,7 @@ function projectEditStates($stateProvider) {
     $stateProvider
         .state('projects.edit', {
             url: '/edit/:projectid',
-            params: {project: null},
+            params: { project: null },
             views: {
                 'navmenu@root': {
                     templateUrl: projectsNavbarTpl,
@@ -169,7 +158,7 @@ function projectStates($stateProvider) {
         })
         .state('projects.detail', {
             url: '/detail/:projectid',
-            params: {project: null},
+            params: { project: null },
             templateUrl: projectsDetailTpl,
             controller: 'ProjectsDetailController',
             controllerAs: '$ctrl',
@@ -235,57 +224,6 @@ function settingsStates($stateProvider) {
         });
 }
 
-function marketStates($stateProvider) {
-    $stateProvider
-        .state('market', {
-            parent: 'root',
-            url: '/market',
-            templateUrl: marketTpl,
-            controller: 'MarketController',
-            controllerAs: '$ctrl',
-            abstract: true
-        })
-        .state('market.search', {
-            url: '/search?:query?toolcategory&tooltag',
-            templateUrl: marketSearchTpl,
-            controller: 'MarketSearchController',
-            controllerAs: '$ctrl'
-        })
-        .state('market.tool', {
-            url: '/tool/:id',
-            params: {
-                modelData: null
-            },
-            templateUrl: marketToolTpl,
-            controller: 'MarketToolController',
-            controllerAs: '$ctrl'
-        });
-}
-
-function labStates($stateProvider) {
-    $stateProvider
-        .state('lab', {
-            parent: 'root',
-            url: '/lab/:toolid',
-            templateUrl: labTpl,
-            controller: 'LabController',
-            controllerAs: '$ctrl',
-            abstract: true
-        })
-        .state('lab.edit', {
-            url: '/edit',
-            templateUrl: labEditTpl,
-            controller: 'LabEditController',
-            controllerAs: '$ctrl'
-        })
-        .state('lab.run', {
-            url: '/run/:projectid?',
-            templateUrl: labRunTpl,
-            controller: 'LabRunController',
-            controllerAs: '$ctrl'
-        });
-}
-
 function shareStates($stateProvider) {
     $stateProvider
         .state('share', {
@@ -317,46 +255,6 @@ function homeStates($stateProvider) {
         });
 }
 
-function importStates($stateProvider) {
-    $stateProvider
-        .state('imports', {
-            parent: 'root',
-            url: '/imports',
-            templateUrl: importsTpl,
-            controller: 'ImportsController',
-            controllerAs: '$ctrl'
-        })
-        .state('imports.datasources', {
-            url: '/datasources',
-            templateUrl: importsDatasourcesTpl,
-            controller: 'DatasourcesController',
-            controllerAs: '$ctrl',
-            abstract: true
-        })
-        .state('imports.datasources.list', {
-            url: '/list?:page',
-            templateUrl: importsDatasourcesListTpl,
-            controller: 'DatasourceListController',
-            controllerAs: '$ctrl'
-        })
-        .state('imports.datasources.detail', {
-            url: '/detail/:datasourceid',
-            templateUrl: importsDatasourcesDetailTpl,
-            controller: 'DatasourceDetailController',
-            controllerAs: '$ctrl'
-        })
-        .state('imports.datasources.detail.colorComposites', {
-            url: '/color-composites',
-            templateUrl: datasourceColorCompositesTpl,
-            controller: 'ColorCompositesController',
-            controllerAs: '$ctrl'
-        })
-        .state('imports.scenes', {
-            url: '/scenes',
-            template: '<div>Scenes</div>'
-        });
-}
-
 function routeConfig($urlRouterProvider, $stateProvider, $urlMatcherFactoryProvider, $locationProvider) {
     'ngInject';
 
@@ -371,13 +269,10 @@ function routeConfig($urlRouterProvider, $stateProvider, $urlMatcherFactoryProvi
     });
 
     loginStates($stateProvider);
-    marketStates($stateProvider);
     projectStates($stateProvider);
     settingsStates($stateProvider);
-    labStates($stateProvider);
     shareStates($stateProvider);
     homeStates($stateProvider);
-    importStates($stateProvider);
 
     $stateProvider
         .state('error', {
