@@ -1,0 +1,47 @@
+#!/bin/bash
+set -eu
+
+DIR="$(dirname "$0")"
+
+function usage() {
+    echo -n \
+"Usage: $(basename "$0")
+
+Builds/Pulls containers for project
+
+Example: ./scripts/bootstrap
+"
+}
+
+
+function main() {
+
+    echo "Pulling down development environment..."
+    pushd "${DIR}/.."
+    # Download environment configuration from S3
+    aws s3 cp "s3://${RF_SETTINGS_BUCKET}/.env" ".env"
+    popd
+
+    echo "Building/Pulling containers..."
+    docker-compose \
+        -f "${DIR}/../docker-compose.yml" \
+        -f "${DIR}/../docker-compose.airflow.yml" \
+        build
+    docker-compose \
+        -f "${DIR}/../docker-compose.yml" \
+        -f "${DIR}/../docker-compose.airflow.yml" \
+        pull postgres redis memcached
+}
+
+
+if [ "${BASH_SOURCE[0]}" = "${0}" ]
+then
+
+    if [ "${1:-}" = "--help" ]
+    then
+        usage
+    else
+        main
+    fi
+    exit
+fi
