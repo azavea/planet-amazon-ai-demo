@@ -5,106 +5,92 @@
     <div class="sidebar-static">
       <!-- Sidebar Header -->
       <div class="sidebar-header">
-        <h5 class="sidebar-title">Editing project</h5>
-        <div ng-if="$ctrl.project.isAOIProject" class="inline-tag aoi-tag">AOI Project</div>
-        <div ng-if="$ctrl.project.isAOIProject" class="sidebar-actions">
+        <h5 class="sidebar-title">Searching Imagery</h5>
+
+        <!-- have no project type -->
+        <!-- <div ng-if="$ctrl.project.isAOIProject" class="inline-tag aoi-tag">AOI Project</div> -->
+        <!-- <div ng-if="$ctrl.project.isAOIProject" class="sidebar-actions">
           <a ui-sref="projects.edit.aoi-parameters">Edit AOI Parameters</a>
-        </div>
+        </div> -->
+
       </div>
       <!-- Sidebar Header -->
 
+
       <!-- Alert -->
+      <!-- no alert needed 
       <div ng-if="$ctrl.project.isAOIProject && $ctrl.pendingSceneList.length" class="content">
         <div class="alert alert-secondary">
           <div class="alert-message">{{$ctrl.pendingSceneList.length}} scenes awaiting approval</div>
           <button class="alert-action" ui-sref="projects.edit.aoi-approve">Review Scenes</button>
         </div>
-      </div>
+      </div> -->
       <!-- Alert -->
 
       <!-- List Group -->
       <div class="list-group">
         <div class="list-group-item">
-          <label>Scenes</label>
-          <div class="list-group-right column-6 nogutter btn-group">
+          <label>Atmospheric Condition</label>
+
+
+          <!-- <div class="list-group-right column-6 nogutter btn-group">
             <button class="btn btn-primary btn-block" type="button" ui-sref="projects.edit.scenes">
               Manage
             </button>
             <button class="btn btn-primary btn-block" type="button" ng-click="$ctrl.openImportModal()">
               Import
             </button>
-          </div>
+          </div> -->
           <i class="icon-info"></i>
+
+        </div>
+        <div class="list-group-item">
+          <div class="checkbox-label-group">
+            <div class="checkbox-label" ng-repeat="atmosLabel in ['clear', 'haze', 'partly cloudy', 'cloudy']">
+              <input type="checkbox" id="{{ atmosLabel }}">{{ atmosLabel }}
+            </div>
+          </div>
+        </div>
+
+        <hr />
+        <div class="list-group-item">
+          <label>Interests</label>
+          <i class="icon-info"></i>
+
+
+        </div>
+        <div class="list-group-item">
+          <div class="checkbox-label-group">
+            <div class="checkbox-label" ng-repeat="interestLabel in ['agriculture', 'artisanal mine', 'blooming', 'bare ground', 'cultivation', 'blow down', 'habitation', 'selective logging', 'conventional mine', 'primary rain forests', 'slash & burn', 'water', 'road']">
+              <input type="checkbox" id="{{ interestLabel }}">{{ interestLabel }}
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div class="list-group-item">
+          <p>32,100 images are found in the map.</p>
+        </div>
+        <div class="list-group-item">
+          <label>Sorted by</label>
+          <input type="radio" name="sort-means" value="score">F2 Score
+          <input type="radio" name="sort-means" id="time">Created Time
+
+
+        </div>
+        <div class="list-group-item">
+          <label>Cards</label>
         </div>
       </div>
       <!-- List Group -->
     </div>
     <!-- Sidebar static / non scrolling -->
-
-    <!-- Sidebar scrollable area -->
-    <div class="sidebar-scrollable">
-      <!-- List Group -->
-      <div class="list-group">
-        <!-- Color Adjustments -->
-        <div class="list-group-item">
-          <label>Color adjustments</label>
-          <div class="list-group-right column-6 nogutter btn-group">
-            <button class="btn btn-light btn-block"
-                  type="button"
-                  ui-sref="projects.edit.colormode">
-              Mode
-            </button>
-            <button class="btn btn-light btn-block"
-                  type="button"
-                  ui-sref="projects.edit.color">
-              Correction
-            </button>
-          </div>
-          <i class="icon-info"></i>
-        </div>
-
-        <!-- Sharing -->
-        <div class="list-group-item">
-          <label>Sharing</label>
-          <div class="list-group-right column-6 nogutter">
-            <button class="btn btn-light btn-block"
-                    type="button"
-                    ng-click="$ctrl.publishModal()">
-              Share project
-            </button>
-          </div>
-          <i class="icon-info"></i>
-        </div>
-        <!-- Sharing -->
-
-        <!-- Export -->
-        <div class="list-group-item">
-          <label>Export</label>
-          <div class="list-group-right column-6 nogutter">
-            <button class="btn btn-light btn-block"
-                    type="button"
-                    ui-sref="projects.edit.export">
-              Export project
-            </button>
-          </div>
-          <i class="icon-info"></i>
-        </div>
-        <!-- Export -->
-      </div>
-      <!-- List Group -->
-    </div>
-    <!-- Sidebar scrollable area -->
   </div>
   <!-- Sidebar -->
 
   <!-- Main map area -->
   <div class="main">
     <rf-map-container map-id="edit" ng-show="!$ctrl.showPreviewMap"></rf-map-container>
-    <rf-map-container map-id="preview"
-                      ng-if="$ctrl.showPreviewMap"
-                      initial-center="$ctrl.center"
-                      initial-zoom="$ctrl.zoom"
-    ></rf-map-container>
+    <rf-map-container map-id="preview" ng-if="$ctrl.showPreviewMap" initial-center="$ctrl.center" initial-zoom="$ctrl.zoom"></rf-map-container>
   </div>
   <!-- Main map area -->
 </div>

@@ -24,10 +24,8 @@
       <div ng-if="!$ctrl.loading && $ctrl.projectList.length === 0">
         <rf-call-to-action-item title="You haven't created any projects yet" class="panel panel-off-white">
           <p class="pb-25">
-            You can create a new project by <strong>importing</strong> your own earth observation
-            imagery, or <strong>searching</strong> publicly available scenes for use in your project.
-            Then you can <strong>edit</strong> your project to color-correct the scenes and arrange
-            them into a perfectly mosaicked basemap.
+            You can create a new project by <strong>searching</strong> publicly available imagery of Amazon Basin for use in your project.
+            When searching, <strong>check</strong> the interest labels to narrow down the selection and add the imagery to your imagery list in the project.
           </p>
           <a class="btn btn-primary" ng-click="$ctrl.createNewProject()">New project</a>
           <p>
@@ -70,7 +68,7 @@
     </div>
     <div class="column spacer"></div>
     <div class="column">
-      <div class="aside">
+      <!-- <div class="aside">
         <section>
           <h5>What is a project?</h5>
           <p class="font-size-small">
@@ -90,7 +88,7 @@
             <li><a>Getting started</a></li>
           </ul>
         </section>
-      </div>
+      </div> -->
     </div>
   </div>
 </div>

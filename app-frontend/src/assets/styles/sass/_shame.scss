@@ -18,6 +18,14 @@
 /*
  * app-wide
  */
+ div.checkbox-label-group {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+div.checkbox-label {
+  width: 25%;
+}
 
 div.image-placeholder {
   background: $gray-lightest;
