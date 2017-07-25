@@ -3,7 +3,7 @@ const shared = angular.module('core.shared', []);
 require('./services/auth.service')(shared);
 require('./services/colorCorrect.service')(shared);
 require('./services/config.provider')(shared);
-require('./services/datasource.service')(shared);
+// require('./services/datasource.service')(shared);
 require('./services/gridLayer.service')(shared);
 require('./services/imageOverlay.service')(shared);
 require('./services/layer.service')(shared);

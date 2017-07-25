@@ -13,7 +13,7 @@ import deferredBootstrapper from 'angular-deferred-bootstrap';
 angular.element(document).ready(function () {
     deferredBootstrapper.bootstrap({
         element: document,
-        module: 'rasterFoundry',
+        module: 'planetLab',
         bootstrapConfig: {
             strictDi: true
         },

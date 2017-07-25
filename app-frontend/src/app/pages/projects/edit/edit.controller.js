@@ -4,7 +4,8 @@ export default class ProjectsEditController {
     constructor( // eslint-disable-line max-params
         $log, $q, $state, $scope, $uibModal,
         authService, projectService, mapService,
-        mapUtilsService, layerService, datasourceService,
+        mapUtilsService, layerService,
+        // datasourceService,
         imageOverlayService, thumbnailService
     ) {
         'ngInject';
@@ -17,7 +18,7 @@ export default class ProjectsEditController {
         this.projectService = projectService;
         this.mapUtilsService = mapUtilsService;
         this.layerService = layerService;
-        this.datasourceService = datasourceService;
+        // this.datasourceService = datasourceService;
         this.imageOverlayService = imageOverlayService;
         this.thumbnailService = thumbnailService;
         this.getMap = () => mapService.getMap('edit');
@@ -103,7 +104,7 @@ export default class ProjectsEditController {
                     this.sceneLayers.set(scene.id, scenelayer);
                 }
                 this.layerFromProject();
-                this.initColorComposites();
+                // this.initColorComposites();
             },
             (error) => {
                 this.sceneRequestState.errorMsg = error;
@@ -119,27 +120,27 @@ export default class ProjectsEditController {
             scenes.filter((scene) => {
                 return scene.tileFootprint && scene.thumbnails && scene.thumbnails.length;
             }).forEach((scene) => {
-                let thumbUrl = this.thumbnailService.getBestFitUrl(scene.thumbnails, 1000);
+                // let thumbUrl = this.thumbnailService.getBestFitUrl(scene.thumbnails, 1000);
                 let boundsGeoJson = L.geoJSON();
                 boundsGeoJson.addData(scene.tileFootprint);
-                let imageBounds = boundsGeoJson.getBounds();
+                // let imageBounds = boundsGeoJson.getBounds();
 
-                this.datasourceService.get(scene.datasource).then(d => {
-                    let overlay = this.imageOverlayService.createNewImageOverlay(
-                        thumbUrl,
-                        imageBounds, {
-                            opacity: 1,
-                            dataMask: scene.dataFootprint,
-                            thumbnail: thumbUrl,
-                            attribution: `©${d.name} `
-                        }
-                    );
-                    mapWrapper.addLayer(
-                        'Uningested Scenes',
-                        overlay,
-                        true
-                    );
-                });
+                // this.datasourceService.get(scene.datasource).then(d => {
+                //     let overlay = this.imageOverlayService.createNewImageOverlay(
+                //         thumbUrl,
+                //         imageBounds, {
+                //             opacity: 1,
+                //             dataMask: scene.dataFootprint,
+                //             thumbnail: thumbUrl,
+                //             attribution: `©${d.name} `
+                //         }
+                //     );
+                //     mapWrapper.addLayer(
+                //         'Uningested Scenes',
+                //         overlay,
+                //         true
+                //     );
+                // });
             });
         });
     }
@@ -195,45 +196,45 @@ export default class ProjectsEditController {
         });
     }
 
-    initColorComposites() {
-        this.fetchUnifiedComposites(true).then(
-            composites => {
-                this.unifiedComposites = composites;
-            }
-        );
-    }
+    // initColorComposites() {
+    //     this.fetchUnifiedComposites(true).then(
+    //         composites => {
+    //             this.unifiedComposites = composites;
+    //         }
+    //     );
+    // }
 
-    unifyComposites(datasources) {
-        let composites = datasources.map(d => d.composites);
-        return composites.reduce((union, comp) => {
-            return Object.keys(comp).reduce((ao, ck) => {
-                if (ck in union) {
-                    ao[ck] = union[ck];
-                }
-                return ao;
-            }, {});
-        }, composites[0]);
-    }
+    // unifyComposites(datasources) {
+    //     let composites = datasources.map(d => d.composites);
+    //     return composites.reduce((union, comp) => {
+    //         return Object.keys(comp).reduce((ao, ck) => {
+    //             if (ck in union) {
+    //                 ao[ck] = union[ck];
+    //             }
+    //             return ao;
+    //         }, {});
+    //     }, composites[0]);
+    // }
 
-    fetchDatasources(force = false) {
-        if (!this.datasourceRequest || force) {
-            this.datasourceRequest = this.$q.all(
-                this.sceneList.map(s => this.datasourceService.get(s.datasource))
-            );
-        }
-        return this.datasourceRequest;
-    }
+    // fetchDatasources(force = false) {
+    //     if (!this.datasourceRequest || force) {
+    //         this.datasourceRequest = this.$q.all(
+    //             this.sceneList.map(s => this.datasourceService.get(s.datasource))
+    //         );
+    //     }
+    //     return this.datasourceRequest;
+    // }
 
-    fetchUnifiedComposites(force = false) {
-        if (!this.unifiedCompositeRequest || force) {
-            this.unifiedCompositeRequest = this.fetchDatasources(force).then(
-                datasources => {
-                    return this.unifyComposites(datasources);
-                }
-            );
-        }
-        return this.unifiedCompositeRequest;
-    }
+    // fetchUnifiedComposites(force = false) {
+    //     if (!this.unifiedCompositeRequest || force) {
+    //         this.unifiedCompositeRequest = this.fetchDatasources(force).then(
+    //             datasources => {
+    //                 return this.unifyComposites(datasources);
+    //             }
+    //         );
+    //     }
+    //     return this.unifiedCompositeRequest;
+    // }
 
     publishModal() {
         if (this.activeModal) {

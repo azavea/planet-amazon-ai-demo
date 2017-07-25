@@ -8,28 +8,33 @@
     </a>
     <span class="navbar-vertical-divider"></span>
     <nav>
-      <a href
+      <!-- <a href
          ng-class="{'icon': $ctrl.isInProject()}"
          ui-sref="home"
          ui-sref-active="active">
         <i class="icon-home"></i>
         <span ng-if="!$ctrl.isInProject()">Home</span>
+      </a> -->
+         <a href
+         ui-sref="home"
+         ui-sref-active="active">
+        <i class="icon-home"></i>
       </a>
-      <a href
+       <!-- <a href
          ng-class="{'icon': $ctrl.isInProject(),
                     'active': $ctrl.$state.includes('projects') }"
          ui-sref="projects.list">
         <i class="icon-project"></i>
         <span ng-if="!$ctrl.isInProject()">Projects</span>
-      </a>
-      <a href
+      </a> 
+       <a href
          ng-class="{'icon': $ctrl.isInProject(),
                     'active': $ctrl.$state.includes('imports') }"
          ui-sref="imports">
         <i class="icon-imports"></i>
         <span ng-if="!$ctrl.isInProject()">Imports</span>
-      </a>
-      <a href
+      </a> 
+       <a href
          feature-flag="tools-ui"
          ui-sref="market.search"
          ng-class="{
@@ -38,13 +43,13 @@
                    }">
         <i class="icon-model"></i>
         <span ng-if="!$ctrl.isInProject()">Tools</span>
-      </a>
+      </a>  -->
 
-      <span ui-view="navmenu"></span>
+      <!-- <span ui-view="navmenu"></span> -->
     </nav>
   </div>
 
-  <!-- Nav Right -->
+   <!-- Nav Right 
   <div class="row no-margin columns-center column align-right navbar-section">
     <nav>
       <div ng-if="$ctrl.authService.isLoggedIn" uib-dropdown class="dropdown-my-account" on-toggle="toggled($ctrl.optionsOpen)">
@@ -67,5 +72,5 @@
         </ul>
       </div>
     </nav>
-  </div>
+  </div> -->
 </div>

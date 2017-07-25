@@ -1,22 +1,22 @@
 version: '2.1'
 services:
-  nginx-api:
-    image: raster-foundry-nginx-api:${GIT_COMMIT:-latest}
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile.api
+  # nginx-api:
+  #   image: raster-foundry-nginx-api:${GIT_COMMIT:-latest}
+  #   build:
+  #     context: ./nginx
+  #     dockerfile: Dockerfile.api
 
-  nginx-tiler:
-    image: raster-foundry-nginx-tiler:${GIT_COMMIT:-latest}
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile.tiler
+  # nginx-tiler:
+  #   image: raster-foundry-nginx-tiler:${GIT_COMMIT:-latest}
+  #   build:
+  #     context: ./nginx
+  #     dockerfile: Dockerfile.tiler
 
-  nginx-airflow:
-    image: raster-foundry-nginx-airflow:${GIT_COMMIT:-latest}
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile.airflow
+  # nginx-airflow:
+  #   image: raster-foundry-nginx-airflow:${GIT_COMMIT:-latest}
+  #   build:
+  #     context: ./nginx
+  #     dockerfile: Dockerfile.airflow
 
   app-frontend:
     image: kkarczmarczyk/node-yarn:6.9-wheezy
@@ -36,28 +36,28 @@ services:
     entrypoint: yarn
     command: run build
 
-  api-server:
-    image: raster-foundry-api-server:${GIT_COMMIT:-latest}
-    build:
-      context: ./app-backend/api
-      dockerfile: Dockerfile
+  # api-server:
+  #   image: raster-foundry-api-server:${GIT_COMMIT:-latest}
+  #   build:
+  #     context: ./app-backend/api
+  #     dockerfile: Dockerfile
 
-  tile-server:
-    image: raster-foundry-tile-server:${GIT_COMMIT:-latest}
-    build:
-      context: ./app-backend/tile
-      dockerfile: Dockerfile
+  # tile-server:
+  #   image: raster-foundry-tile-server:${GIT_COMMIT:-latest}
+  #   build:
+  #     context: ./app-backend/tile
+  #     dockerfile: Dockerfile
 
-  app-migrations:
-    image: raster-foundry-app-migrations:${GIT_COMMIT:-latest}
-    build:
-      context: ./app-backend
-      dockerfile: Dockerfile
+  # app-migrations:
+  #   image: raster-foundry-app-migrations:${GIT_COMMIT:-latest}
+  #   build:
+  #     context: ./app-backend
+  #     dockerfile: Dockerfile
 
-  airflow:
-    image: raster-foundry-airflow:${GIT_COMMIT:-latest}
-    build:
-      context: ./app-tasks
-      dockerfile: Dockerfile
-    volumes:
-      - ./app-tasks/rf/:/opt/raster-foundry/app-tasks/rf/
+  # airflow:
+  #   image: raster-foundry-airflow:${GIT_COMMIT:-latest}
+  #   build:
+  #     context: ./app-tasks
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./app-tasks/rf/:/opt/raster-foundry/app-tasks/rf/

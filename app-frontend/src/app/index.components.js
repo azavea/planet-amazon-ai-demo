@@ -17,24 +17,24 @@ export default angular.module('index.components', [
     require('./components/projects/projectCreateModal/projectCreateModal.module.js').name,
     require('./components/projects/projectExportModal/projectExportModal.module.js').name,
 
-    // datasource components
-    require('./components/datasources/datasourceItem/datasourceItem.module.js').name,
-    require('./components/datasources/datasourceCreateModal/datasourceCreateModal.module.js').name,
+    // // datasource components
+    // require('./components/datasources/datasourceItem/datasourceItem.module.js').name,
+    // require('./components/datasources/datasourceCreateModal/datasourceCreateModal.module.js').name,
 
-    // tool components
-    require('./components/tools/toolSearch/toolSearch.module.js').name,
-    require('./components/tools/toolItem/toolItem.module.js').name,
-    require('./components/tools/diagramContainer/diagramContainer.module.js').name,
+    // // tool components
+    // require('./components/tools/toolSearch/toolSearch.module.js').name,
+    // require('./components/tools/toolItem/toolItem.module.js').name,
+    // require('./components/tools/diagramContainer/diagramContainer.module.js').name,
 
     // map components
     require('./components/map/mapContainer/mapContainer.module.js').name,
     require('./components/map/staticMap/staticMap.module.js').name,
-    require('./components/map/drawToolbar/drawToolbar.module.js').name,
+    // require('./components/map/drawToolbar/drawToolbar.module.js').name,
 
-    // settings components
-    require('./components/settings/refreshTokenModal/refreshTokenModal.module.js').name,
-    require('./components/settings/featureFlagOverrides/featureFlagOverrides.module.js').name,
-    require('./components/settings/tokenItem/tokenItem.module.js').name,
+    // // settings components
+    // require('./components/settings/refreshTokenModal/refreshTokenModal.module.js').name,
+    // require('./components/settings/featureFlagOverrides/featureFlagOverrides.module.js').name,
+    // require('./components/settings/tokenItem/tokenItem.module.js').name,
 
     // export components
     require('./components/exports/exportItem/exportItem.module.js').name,
@@ -51,7 +51,7 @@ export default angular.module('index.components', [
     require('./components/common/datePickerModal/datePickerModal.module.js').name,
     require('./components/common/statusTag/statusTag.module.js').name,
 
-    // Single components for new domains
-    require('./components/aoiFilterPane/aoiFilterPane.module.js').name,
-    require('./components/channelHistogram/channelHistogram.module.js').name,
+    // // Single components for new domains
+    // require('./components/aoiFilterPane/aoiFilterPane.module.js').name,
+    // require('./components/channelHistogram/channelHistogram.module.js').name,
 ]);

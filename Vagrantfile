@@ -52,7 +52,7 @@ Vagrant.configure(2) do |config|
   end
 
   host_user = ENV.fetch("USER", "vagrant")
-  aws_profile = ENV.fetch("RF_AWS_PROFILE", "raster-foundry")
+  aws_profile = ENV.fetch("RF_AWS_PROFILE", "azavea-research")
   rf_settings_bucket = ENV.fetch("RF_SETTINGS_BUCKET",
                                 "rasterfoundry-development-config-us-east-1")
   rf_artifacts_bucket = ENV.fetch("RF_ARTIFACTS_BUCKET",
