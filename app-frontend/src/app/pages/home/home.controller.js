@@ -1,35 +1,20 @@
 class HomeController {
-    constructor(authService, $uibModal, feedService) {
+    constructor($scope, $log, $cookies
+    ) {
         'ngInject';
-        this.authService = authService;
-        this.$uibModal = $uibModal;
-        this.feedService = feedService;
+        this.$scope = $scope;
+        this.$log = $log;
+
+        this.$cookies = $cookies;
     }
 
     $onInit() {
-        this.feedService.getPosts().then(posts => {
-            this.blogPosts = posts;
-        });
+        this.$log.info('try cookies', this.$cookies);
+        this.$cookies.put('chipList', 'chipIDs');
+        this.$scope.chipList = this.$cookies.get('chipList');
     }
 
     $onDestroy() {
-
-    }
-
-    openCreateProjectModal() {
-        if (this.activeModal) {
-            this.activeModal.dismiss();
-        }
-
-        this.activeModal = this.$uibModal.open({
-            component: 'rfProjectCreateModal'
-        });
-
-        this.activeModal.result.then(() => {
-
-        });
-
-        return this.activeModal;
     }
 }
 

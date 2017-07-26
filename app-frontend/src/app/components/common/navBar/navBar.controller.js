@@ -2,7 +2,7 @@ import assetLogo from '../../../../assets/images/logo-raster-foundry.png';
 
 export default class NavBarController {
     constructor( // eslint-disable-line max-params
-        $log, $state, $scope, $uibModal, APP_CONFIG
+        $log, $state, $scope, APP_CONFIG
         //  authService, localStorage, projectService
     ) {
         'ngInject';
@@ -13,7 +13,6 @@ export default class NavBarController {
         this.$log = $log;
         this.$state = $state;
         this.$scope = $scope;
-        this.$uibModal = $uibModal;
         // this.localStorage = localStorage;
         // this.authService = authService;
         // this.projectService = projectService;

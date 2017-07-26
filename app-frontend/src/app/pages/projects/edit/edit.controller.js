@@ -3,10 +3,9 @@ const Map = require('es6-map');
 export default class ProjectsEditController {
     constructor( // eslint-disable-line max-params
         $log, $q, $state, $scope, $uibModal,
-        authService, projectService, mapService,
+        projectService, mapService,
         mapUtilsService, layerService,
-        // datasourceService,
-        imageOverlayService, thumbnailService
+        imageOverlayService
     ) {
         'ngInject';
         this.$log = $log;
@@ -14,13 +13,10 @@ export default class ProjectsEditController {
         this.$state = $state;
         this.$scope = $scope;
         this.$uibModal = $uibModal;
-        this.authService = authService;
         this.projectService = projectService;
         this.mapUtilsService = mapUtilsService;
         this.layerService = layerService;
-        // this.datasourceService = datasourceService;
         this.imageOverlayService = imageOverlayService;
-        this.thumbnailService = thumbnailService;
         this.getMap = () => mapService.getMap('edit');
     }
 
@@ -67,7 +63,7 @@ export default class ProjectsEditController {
 
     waitForProject() {
         return this.$q((resolve, reject) => {
-            this.projectUpdateListeners.push({resolve: resolve, reject: reject});
+            this.projectUpdateListeners.push({ resolve: resolve, reject: reject });
         });
     }
 
@@ -85,7 +81,7 @@ export default class ProjectsEditController {
     }
 
     getSceneList() {
-        this.sceneRequestState = {loading: true};
+        this.sceneRequestState = { loading: true };
         this.sceneListQuery = this.projectService.getAllProjectScenes(
             {
                 projectId: this.projectId,
@@ -196,46 +192,6 @@ export default class ProjectsEditController {
         });
     }
 
-    // initColorComposites() {
-    //     this.fetchUnifiedComposites(true).then(
-    //         composites => {
-    //             this.unifiedComposites = composites;
-    //         }
-    //     );
-    // }
-
-    // unifyComposites(datasources) {
-    //     let composites = datasources.map(d => d.composites);
-    //     return composites.reduce((union, comp) => {
-    //         return Object.keys(comp).reduce((ao, ck) => {
-    //             if (ck in union) {
-    //                 ao[ck] = union[ck];
-    //             }
-    //             return ao;
-    //         }, {});
-    //     }, composites[0]);
-    // }
-
-    // fetchDatasources(force = false) {
-    //     if (!this.datasourceRequest || force) {
-    //         this.datasourceRequest = this.$q.all(
-    //             this.sceneList.map(s => this.datasourceService.get(s.datasource))
-    //         );
-    //     }
-    //     return this.datasourceRequest;
-    // }
-
-    // fetchUnifiedComposites(force = false) {
-    //     if (!this.unifiedCompositeRequest || force) {
-    //         this.unifiedCompositeRequest = this.fetchDatasources(force).then(
-    //             datasources => {
-    //                 return this.unifyComposites(datasources);
-    //             }
-    //         );
-    //     }
-    //     return this.unifiedCompositeRequest;
-    // }
-
     publishModal() {
         if (this.activeModal) {
             this.activeModal.dismiss();
@@ -249,42 +205,5 @@ export default class ProjectsEditController {
                 shareUrl: () => this.projectService.getProjectShareURL(this.project)
             }
         });
-    }
-
-    openExportModal() {
-        if (this.activeModal) {
-            this.activeModal.dismiss();
-        }
-
-        this.getMap().then(m => {
-            return m.map.getZoom();
-        }).then(zoom => {
-            this.activeModal = this.$uibModal.open({
-                component: 'rfProjectExportModal',
-                resolve: {
-                    project: () => this.project,
-                    zoom: () => zoom
-                }
-            });
-        });
-    }
-
-    openImportModal() {
-        if (this.activeModal) {
-            this.activeModal.dismiss();
-        }
-
-        this.activeModal = this.$uibModal.open({
-            component: 'rfSceneImportModal',
-            resolve: {
-                project: () => this.project
-            }
-        });
-
-        this.activeModal.result.then(() => {
-
-        });
-
-        return this.activeModal;
     }
 }

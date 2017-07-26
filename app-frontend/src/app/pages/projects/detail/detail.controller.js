@@ -1,7 +1,7 @@
 export default class ProjectsDetailController {
     constructor( // eslint-disable-line max-params
         $log, $state, $location, projectService, $scope, $uibModal,
-        mapService, authService, mapUtilsService
+        mapService, mapUtilsService
     ) {
         'ngInject';
 
@@ -13,7 +13,6 @@ export default class ProjectsDetailController {
         this.$uibModal = $uibModal;
         this.$scope = $scope;
         this.mapService = mapService;
-        this.authService = authService;
         this.mapUtilsService = mapUtilsService;
     }
 
@@ -70,8 +69,8 @@ export default class ProjectsDetailController {
 
     addProjectLayer() {
         let url = this.projectService.getProjectLayerURL(
-            this.project,
-            this.authService.token()
+            this.project
+            // this.authService.token()
         );
         let layer = L.tileLayer(url);
 

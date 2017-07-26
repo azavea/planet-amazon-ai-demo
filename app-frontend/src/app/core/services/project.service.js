@@ -1,57 +1,19 @@
 /* globals BUILDCONFIG */
 
 /* global L */
-const availableProcessingOptions = [
-    {
-        label: 'Color Corrected',
-        description:
-            `Export with the color-corrections and false color composites configured
-            for this project`,
-        value: 'current',
-        default: true
-    }, {
-        label: 'Raw',
-        value: 'raw',
-        exportOptions: {
-            raw: true
-        }
-    }, {
-        label: 'NDVI',
-        value: 'ndvi',
-        description:
-            'Assess whether the target being observed contains live green vegetation or not',
-        toolId: '7311e8ca-9af7-4fab-b63e-559d2e765388'
-    }, {
-        label: 'NDWI',
-        value: 'ndwi',
-        description:
-            'An index that is primarily used to distinguish water bodies.',
-        toolId: '2d3a351f-54b4-42a9-9db4-d027b9aac03c'
-    }, {
-        label: 'NDMI',
-        value: 'ndmi',
-        description:
-            'An index that assesses the variation of the moisture content of vegetation.',
-        toolId: '44fad5c9-1e0d-4631-aaa0-a61182619cb1'
-    }
-];
 
 export default (app) => {
     class ProjectService {
         constructor(
             $resource, $location, $http, $q, APP_CONFIG,
-            tokenService, authService, statusService
+            statusService
         ) {
             'ngInject';
-
-            this.tokenService = tokenService;
-            this.authService = authService;
             this.statusService = statusService;
             this.exportType = 'S3';
             this.$http = $http;
             this.$location = $location;
             this.$q = $q;
-            this.availableProcessingOptions = availableProcessingOptions;
 
             this.currentProject = null;
 
@@ -98,48 +60,6 @@ export default (app) => {
                             projectId: '@projectId',
                             pending: '@pending'
                         }
-                    },
-                    projectAois: {
-                        method: 'GET',
-                        cache: false,
-                        url: `${BUILDCONFIG.API_HOST}/api/projects/:projectId/areas-of-interest`,
-                        params: {
-                            projectId: '@projectId'
-                        }
-                    },
-                    removeScenes: {
-                        method: 'DELETE',
-                        url: `${BUILDCONFIG.API_HOST}/api/projects/:projectId/scenes/`,
-                        params: {
-                            projectId: '@projectId'
-                        }
-                    },
-                    export: {
-                        method: 'POST',
-                        url: '/api/exports/'
-                    },
-                    listExports: {
-                        method: 'GET',
-                        url: `${BUILDCONFIG.API_HOST}/api/exports?project=:project`,
-                        params: {
-                            project: '@project'
-                        }
-                    },
-                    createAOI: {
-                        method: 'POST',
-                        url: `${BUILDCONFIG.API_HOST}/api/projects/:projectId/areas-of-interest/`,
-                        params: {
-                            projectId: '@projectId'
-                        }
-                    },
-                    approveScene: {
-                        method: 'POST',
-                        url: `${BUILDCONFIG.API_HOST}` +
-                            '/api/projects/:projectId/scenes/:sceneId/accept',
-                        params: {
-                            projectId: '@projectId',
-                            sceneId: '@sceneId'
-                        }
                     }
                 }
             );
@@ -155,60 +75,6 @@ export default (app) => {
 
         listExports(params = {}) {
             return this.Project.listExports(params).$promise;
-        }
-
-        export(project, settings = {}, options = {}) {
-            const defaultOptions = {
-                resolution: 9,
-                stitch: false,
-                crop: false
-            };
-
-            const finalOptions = Object.assign(defaultOptions, options);
-
-            const defaultSettings = {
-                projectId: project.id,
-                exportStatus: 'NOTEXPORTED',
-                exportType: this.exportType ? this.exportType : 'S3',
-                visibility: 'PRIVATE',
-                exportOptions: finalOptions
-            };
-
-            const finalSettings = Object.assign(defaultSettings, settings);
-
-            const userRequest = this.authService.getCurrentUser();
-
-            return userRequest.then(
-                (user) => {
-                    return this.Project.export(
-                        Object.assign(finalSettings, {
-                            organizationId: user.organizationId
-                        })
-                    ).$promise;
-                },
-                (error) => {
-                    return error;
-                }
-            );
-        }
-
-        createProject(name, params = {}) {
-            return this.authService.getCurrentUser().then(
-                (user) => {
-                    return this.Project.create({
-                        organizationId: user.organizationId,
-                        name: name,
-                        description: params.description || '',
-                        visibility: params.visibility || 'PRIVATE',
-                        tileVisibility: params.tileVisibility || 'PRIVATE',
-                        tags: params.tags || [],
-                        isAOIProject: params.isAOIProject || false
-                    }).$promise;
-                },
-                (error) => {
-                    return error;
-                }
-            );
         }
 
         addScenes(projectId, sceneIds) {
@@ -343,29 +209,8 @@ export default (app) => {
             });
         }
 
-        deleteProject(projectId) {
-            return this.Project.delete({id: projectId}).$promise;
-        }
-
         updateProject(params) {
             return this.Project.updateProject(params).$promise;
-        }
-
-        createAOI(project, params) {
-            return this.$q((resolve, reject) => {
-                this.authService.getCurrentUser().then(user => {
-                    const paramsWithOrg =
-                          Object.assign(params, { organizationId: user.organizationId });
-                    this.Project.createAOI(
-                        {projectId: project},
-                        paramsWithOrg
-                    ).$promise.then(() => resolve(), (err) => reject(err));
-                });
-            });
-        }
-
-        approveScene(projectId, sceneId) {
-            return this.Project.approveScene({ projectId, sceneId }).$promise;
         }
 
         getBaseURL() {
@@ -374,20 +219,6 @@ export default (app) => {
             let port = this.$location.port();
             let formattedPort = port !== 80 && port !== 443 ? ':' + port : '';
             return `${protocol}://${host}${formattedPort}`;
-        }
-
-        getProjectLayerURL(project, token) {
-            let params = {
-                tag: new Date().getTime()
-            };
-
-            if (token) {
-                params.token = token;
-            }
-
-            let formattedParams = L.Util.getParamString(params);
-
-            return `${this.tileServer}/${project.id}/{z}/{x}/{y}/${formattedParams}`;
         }
 
         getZoomLevel(bbox) {
@@ -407,57 +238,6 @@ export default (app) => {
                 return 16;
             }
             return 18;
-        }
-
-        getProjectThumbnailURL(project, token) {
-            if (project.extent) {
-                let coords = project.extent.coordinates[0];
-                // Lower left and upper right coordinates in extent
-                let bbox = [... coords[0], ... coords[2]];
-                let params = {
-                    bbox: bbox,
-                    zoom: this.getZoomLevel(bbox),
-                    token: token
-                };
-                let formattedParams = L.Util.getParamString(params);
-                let url = `${this.tileServer}/${project.id}/export/${formattedParams}`;
-                return url;
-            }
-            return null;
-        }
-
-        getProjectShareURL(project) {
-            let deferred = this.$q.defer();
-            let shareUrl = `${this.getBaseURL()}/#/share/${project.id}`;
-            if (project.tileVisibility === 'PRIVATE') {
-                this.tokenService.getOrCreateProjectMapToken(project).then((token) => {
-                    deferred.resolve(`${shareUrl}/?mapToken=${token.id}`);
-                });
-            } else {
-                deferred.resolve(shareUrl);
-            }
-            return deferred.promise;
-        }
-
-        loadProject(id) {
-            this.isLoadingProject = true;
-            this.currentProjectId = id;
-            const request = this.get(id);
-            request.then(
-                p => {
-                    this.currentProject = p;
-                },
-                () => {
-                    this.currentProjectId = null;
-                }
-            ).finally(() => {
-                this.isLoadingProject = false;
-            });
-            return request;
-        }
-
-        getProjectAois(projectId) {
-            return this.Project.projectAois({projectId: projectId}).$promise;
         }
     }
 
