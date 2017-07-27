@@ -561,6 +561,12 @@
       "search": [
         "calendar"
       ]
+    },
+    {
+      "uid": "3def559c3c39b8500882e02892b7daa8",
+      "css": "chips",
+      "code": 62257,
+      "src": "entypo"
     }
   ]
 }

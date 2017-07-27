@@ -29,6 +29,9 @@ const App = angular.module(
         'angular.filter',
         '720kb.tooltips',
 
+        // angular-ui-bootstrap
+        'ui.bootstrap',
+
         // core
         require('./core/core.module').name,
 
@@ -44,15 +47,6 @@ const App = angular.module(
         require('./pages/chips/chips.module.js').name,
 
         require('./pages/error/error.module.js').name
-
-        // require('./pages/projects/projects.module.js').name,
-
-        // require('./pages/projects/list/list.module.js').name,
-
-        // require('./pages/projects/detail/detail.module.js').name,
-        // require('./pages/projects/detail/scenes/scenes.module.js').name,
-
-        // require('./pages/projects/edit/edit.module.js').name
     ]
 );
 

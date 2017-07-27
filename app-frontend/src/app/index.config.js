@@ -1,6 +1,6 @@
 /* globals process */
 
-import assetLogo from '../assets/images/logo-raster-foundry.png';
+import assetLogo from '../assets/images/logo-planet-lab.png';
 
 
 function config( // eslint-disable-line max-params
