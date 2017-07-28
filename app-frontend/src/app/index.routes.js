@@ -6,29 +6,6 @@ import errorTpl from './pages/error/error.html';
 import homeTpl from './pages/home/home.html';
 
 import chipsTpl from './pages/chips/chips.html';
-
-function homeStates($stateProvider) {
-    $stateProvider
-        .state('home', {
-            parent: 'root',
-            url: '/home',
-            templateUrl: homeTpl,
-            controller: 'HomeController',
-            controllerAs: '$ctrl'
-        });
-}
-
-function chipsStates($stateProvider) {
-    $stateProvider
-        .state('chips', {
-            parent: 'root',
-            url: '/chips',
-            templateUrl: chipsTpl,
-            controller: 'ChipsController',
-            controllerAs: '$ctrl'
-        });
-}
-
 function routeConfig($urlRouterProvider, $stateProvider, $urlMatcherFactoryProvider, $locationProvider) {
     'ngInject';
 
@@ -37,12 +14,21 @@ function routeConfig($urlRouterProvider, $stateProvider, $urlMatcherFactoryProvi
 
     $stateProvider.state('root', {
         templateUrl: rootTpl
+    }).state('home', {
+        parent: 'root',
+        url: '/home',
+        templateUrl: homeTpl,
+        controller: 'HomeController',
+        controllerAs: '$ctrl'
+    }).state('chips', {
+        parent: 'root',
+        url: '/chips',
+        templateUrl: chipsTpl,
+        controller: 'ChipsController',
+        controllerAs: '$ctrl'
     }).state('callback', {
         url: '/callback'
     });
-
-    homeStates($stateProvider);
-    chipsStates($stateProvider);
 
     $stateProvider
         .state('error', {

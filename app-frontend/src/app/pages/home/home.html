@@ -67,22 +67,36 @@
         <div class="list-group-item">
           <!-- Chip List -->
           <div style="width: 100%; display: flex; align-content: flex-start; flex-flow: row wrap">
-            <div style="margin: 2px" ng-repeat="chip in chipList track by $index" ng-mouseover="hoverStyle={'visibility': 'visible'}" ng-mouseleave="hoverStyle={'visibility': 'hidden'}">
+            <div style="margin: 2px" ng-repeat="chip in chipList track by $index" ng-mouseover="hoverStyle={'visibility': 'visible'}"
+              ng-mouseleave="hoverStyle={'visibility': 'hidden'}">
+
               <!-- ideally, generate unique ID from backend -->
               <!-- <div ng-repeat="chip in chipList track by chip.id"> -->
-               <div ng-style="hoverStyle" style="height: 110px; width: 110px; position: absolute; text-align: center; visibility: hidden">
-                <p style="white-space: pre-line;">
+
+              <!-- Thumbnail Hover Text -->
+              <div ng-style="hoverStyle" style="height: 110px; width: 110px; position: absolute; text-align: center; visibility: hidden">
+
+                <p style="white-space: pre-line">
                   Chip ID: {{chip.id}}
-                 Scene ID: {{chip.sceneId}}
+                  Scene ID: {{chip.sceneId}}
                 </p>
                 <br />
-                 <button style="height: 25px; width: 70px; padding: 0; font-size: small" type="button" class="btn btn-primary" ng-click="showDetails()">
+                <button style="height: 25px; width: 70px; padding: 0; font-size: small" type="button" class="btn btn-primary" ng-click="showDetails(chip.id);">
                   Details
                 </button>
-               </div>
+              </div>
+              <!-- Thumbnail Hover Text -->
 
+              <!-- Favorite List Star -->
+              <div style="position: absolute" ng-switch="favListAdded(chip.id)">
+                <i class="icon-star" role="button" ng-switch-when="false" ng-click="addFavorite(chip.id)"></i>
+                <i class="icon-star-filled" role="button" ng-switch-when="true" ng-click="removeFavorite(chip.id)"></i>
+              </div>
+              <!-- Favorite List Star -->
+
+              <!-- Thumbnail -->
               <img ng-src="{{chip.source}}" alt="Thumbnail">
-                
+              <!-- Thumbnail   -->
             </div>
             <div style="margin: auto; display: flex; flex-direction: column">
               <button style="margin-bottom: 5px; width: 90px" type="button" class="btn btn-primary" ng-click="showNext()">
