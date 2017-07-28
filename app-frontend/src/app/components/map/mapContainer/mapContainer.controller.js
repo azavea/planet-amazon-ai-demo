@@ -51,8 +51,8 @@ export default class MapContainerController {
             keyboard: !this.options.static,
             tap: !this.options.static
         }).setView(
-            this.initialCenter ? this.initialCenter : [0, 0],
-            this.initialZoom ? this.initialZoom : 2
+            this.initialCenter ? this.initialCenter : [-3.4653053, -62.2180692],
+            this.initialZoom ? this.initialZoom : 5
         );
 
 
