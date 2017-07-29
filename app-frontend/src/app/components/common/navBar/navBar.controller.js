@@ -2,36 +2,14 @@ import assetLogo from '../../../../assets/images/logo-planet-lab.png';
 
 export default class NavBarController {
     constructor( // eslint-disable-line max-params
-        $log, $state, $scope, APP_CONFIG
-        //  authService, localStorage, projectService
+        $log, $scope
     ) {
         'ngInject';
-        if (APP_CONFIG.error) {
-            this.loadError = true;
-        }
-
         this.$log = $log;
-        this.$state = $state;
         this.$scope = $scope;
-        // this.localStorage = localStorage;
-        // this.authService = authService;
-        // this.projectService = projectService;
     }
-
-    // isInProject() {
-    //     return this.$state.includes('projects.edit');
-    // }
 
     $onInit() {
-        this.optionsOpen = false;
         this.assetLogo = assetLogo;
     }
-
-    // signin() {
-    //     this.authService.login();
-    // }
-
-    // logout() {
-    //     this.authService.logout();
-    // }
 }
