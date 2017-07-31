@@ -8,7 +8,7 @@ export default (app) => {
         constructor( // eslint-disable-line max-params
             jwtHelper, $q, $timeout, featureFlagOverrides, featureFlags,
             perUserFeatureFlags, $state, APP_CONFIG, localStorage,
-            rollbarWrapperService, intercomService, $resource
+            intercomService, $resource
         ) {
             this.localStorage = localStorage;
             this.jwtHelper = jwtHelper;
@@ -19,7 +19,6 @@ export default (app) => {
             this.perUserFeatureFlags = perUserFeatureFlags;
             this.featureFlagOverrides = featureFlagOverrides;
             this.intercomService = intercomService;
-            this.rollbarWrapperService = rollbarWrapperService;
 
             if (!APP_CONFIG.error) {
                 this.initAuth0(APP_CONFIG);

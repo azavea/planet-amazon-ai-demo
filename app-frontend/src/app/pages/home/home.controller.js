@@ -26,13 +26,13 @@ class HomeController {
 
 
     showNext() {
-        this.$scope.chipList.forEach((datum) => {
+        this.$scope.chipList.map((datum) => {
             datum.id += 5;
         });
     }
 
     showPrevious() {
-        this.$scope.chipList.forEach((datum) => {
+        this.$scope.chipList.map((datum) => {
             datum.id -= 5;
         });
     }

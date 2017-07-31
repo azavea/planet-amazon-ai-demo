@@ -25,7 +25,6 @@ const App = angular.module(
         'ngResource',
         'oc.lazyLoad',
         'angularLoad',
-        'tandibar/ng-rollbar',
         'angular.filter',
         '720kb.tooltips',
 

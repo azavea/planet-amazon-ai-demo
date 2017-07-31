@@ -1,9 +1,61 @@
 <h4 style="text-align: center;">
- Chips List {{favList}}
+  Chips List
 </h4>
+<div class="list-group text-center">
+  <!-- Show message -->
+  <div class="list-group text-center" ng-if="!$ctrl.shouldShowList()">
+    <ul style="white-space: pre-line">
+      Search and Add More Imagery to Your Favorite List!
+    </ul>
+  </div>
+  <!-- Show message -->
+  <!-- Pagination -->
+  <div class="list-group text-center" ng-if="$ctrl.shouldShowList()">
+    <ul uib-pagination total-items="count" ng-model="currentPage" max-size="8" class="pagination-sm" boundary-link-numbers="true"
+      rotate="false"></ul>
+  </div>
+  <!-- Pagination -->
+  <!-- Chip List -->
+  <div class="list-group align-left text-center" style="width: 100%; padding: 0 10%; display: flex; align-content: flex-start; flex-flow: row wrap">
+    <div style="width: 25%; height: 260px" ng-repeat="chip in favList track by chip.id" ng-mouseover="hoverStyle={'visibility': 'visible'}"
+      ng-mouseleave="hoverStyle={'visibility': 'hidden'}">
+      <!-- ideally, generate unique ID from backend -->
+      <!-- <div ng-repeat="chip in chipList track by chip.id"> -->
 
-<!-- Loading Indicator -->
-<!-- <div class="column-8">
+      <!-- Thumbnail Hover Text -->
+      <div ng-style="hoverStyle" class="text-center align-center" style="width: 20%; height: 256px; position: absolute; visibility: hidden">
+        <p style="white-space: pre-line">
+          Chip ID: {{chip.id}} Scene ID: {{chip.sceneId}}
+        </p>
+        <br />
+        <div>
+          <button style="height: 25px; width: 70px; padding: 0; font-size: small" type="button" class="btn btn-primary" ng-click="$ctrl.showDetails(chip.id);">
+            Details
+          </button>
+        </div>
+        <div>
+          <button style="margin-top: 10px; height: 25px; width: 70px; padding: 0; font-size: small" type="button" class="btn btn-danger"
+            ng-click="$ctrl.removeFavorite(chip.id)">
+            Remove
+        </button>
+        </div>
+      </div>
+      <!-- Thumbnail Hover Text -->
+      <!-- Thumbnail -->
+      <img style="height: 256px; width: 256px" ng-src="{{chip.source}}" alt="Thumbnail">
+      <!-- Thumbnail   -->
+    </div>
+  </div>
+  <!-- Chip List -->
+  <!-- Text Message -->
+  <div class="list-group text-center">
+    <ng-pluralize count="count" when="{'0': 'No image is found in the list.',
+                     'one': '1 image is in the list.',
+                     'other': '{} images are in the list.'}">
+    </ng-pluralize>
+  </div>
+  <!-- Loading Indicator -->
+  <!-- <div class="column-8">
   <div class="list-group">
     <div class="list-placeholder">
       <i class="icon-load"></i>
