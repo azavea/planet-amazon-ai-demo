@@ -12,7 +12,6 @@ require('./services/user.service')(shared);
 require('./services/storage.service')(shared);
 require('./services/mapUtils.service')(shared);
 require('./services/intercom.service')(shared);
-require('./services/rollbarWrapper.service')(shared);
 require('./services/status.service')(shared);
 
 require('./services/featureFlagOverrides.service')(shared);
@@ -23,6 +22,6 @@ require('./aws-sdk-s3.module.js');
 
 // raster-vision-planet-lab
 require('./services/chip.service')(shared);
-
+require('./services/scene.service')(shared);
 
 export default shared;

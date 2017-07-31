@@ -2,9 +2,9 @@
 
 export default (app) => {
     class SceneService {
-        constructor($resource) {
+        constructor($resource, $log) {
             'ngInject';
-
+            this.$log = $log;
             this.Scene = $resource(
                 `${BUILDCONFIG.API_HOST}/api/scenes/:id/`, {
                     id: '@properties.id'
@@ -24,19 +24,36 @@ export default (app) => {
         query(params = {}) {
             let validParams = Object.assign(
                 params,
-                {minCloudCover: params.minCloudCover ? params.minCloudCover : 0}
+                { minCloudCover: params.minCloudCover ? params.minCloudCover : 0 }
             );
             return this.Scene.query(validParams).$promise;
         }
 
         deleteScene(scene) {
-            return this.Scene.delete({id: scene.id}).$promise;
+            return this.Scene.delete({ id: scene.id }).$promise;
         }
 
         getSceneBounds(scene) {
             let boundsGeoJson = L.geoJSON();
             boundsGeoJson.addData(scene.dataFootprint);
             return boundsGeoJson.getBounds();
+        }
+
+        getScenes(labels) {
+            this.$log.info('scene service', labels);
+            return [{
+                type: 'Feature',
+                properties: { 'sceneId': 1 },
+                geometry: {
+                    type: 'Polygon',
+                    coordinates: [[
+                        [-104.05, 48.99],
+                        [-97.22, 48.98],
+                        [-104.03, 45.94],
+                        [-104.05, 48.99]
+                    ]]
+                }
+            }];
         }
 
         /**

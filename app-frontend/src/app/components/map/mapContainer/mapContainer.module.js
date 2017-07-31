@@ -9,7 +9,7 @@ require('./sideBySide.module.js');
 
 const MapContainerModule = angular.module('components.map.mapContainer', []);
 
-MapContainerModule.component('rfMapContainer', MapContainerComponent);
+MapContainerModule.component('plMapContainer', MapContainerComponent);
 MapContainerModule.controller('MapContainerController', MapContainerController);
 
 export default MapContainerModule;
