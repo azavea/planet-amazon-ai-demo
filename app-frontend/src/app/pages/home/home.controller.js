@@ -1,23 +1,24 @@
 class HomeController {
-    constructor($scope, $log, $cookies, $location) {
+    constructor($scope, $log, $cookies, $location, chipService) {
         'ngInject';
         this.$scope = $scope;
         this.$log = $log;
         this.$cookies = $cookies;
         this.$location = $location;
+        this.chipService = chipService;
     }
     $onInit() {
+        this.$scope.atmosLabels = ['clear', 'haze', 'partly cloudy', 'cloudy'];
+        this.$scope.interestLabels = ['agriculture', 'artisanal mine', 'blooming', 'bare ground', 'cultivation', 'blow down', 'habitation', 'selective logging', 'conventional mine', 'primary rain forests', 'slash & burn', 'water', 'road'];// eslint-disable-line 
+        this.$scope.selectedLabels = [];
         // through backend call
-        this.$scope.chipList = [
-            { id: 0, sceneId: 2, source: 'http://via.placeholder.com/110X110' },
-            { id: 1, sceneId: 2, source: 'http://via.placeholder.com/110X110' },
-            { id: 2, sceneId: 3, source: 'http://via.placeholder.com/110X110' },
-            { id: 3, sceneId: 4, source: 'http://via.placeholder.com/110X110' },
-            { id: 4, sceneId: 1, source: 'http://via.placeholder.com/110X110' }
-        ];
+        let labels = ['clear', 'agriculture'];
+        this.$scope.chipList = this.chipService.getChips(labels);
     }
 
-    $onDestroy() {
+    checkLabel(val, num) {
+        this.$log.info('atmos', val);
+        this.$log.info('num', num);
     }
 
     favListAdded(datum) {

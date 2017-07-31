@@ -25,8 +25,8 @@
             </div>
             <div class="list-group-item">
               <div class="checkbox-label-group">
-                <div class="checkbox-label" ng-repeat="atmosLabel in ['clear', 'haze', 'partly cloudy', 'cloudy']">
-                  <input type="checkbox" id="{{ atmosLabel }}">{{ atmosLabel }}
+                <div class="checkbox-label" ng-repeat="atmosLabel in atmosLabels track by $index">
+                  <input type="checkbox" ng-model="selectedLabel">{{ atmosLabel }} {{selectedLabels}}
                 </div>
               </div>
             </div>
@@ -39,13 +39,14 @@
             </div>
             <div class="list-group-item">
               <div class="checkbox-label-group">
-                <div class="checkbox-label" ng-repeat="interestLabel in ['agriculture', 'artisanal mine', 'blooming', 'bare ground', 'cultivation', 'blow down', 'habitation', 'selective logging', 'conventional mine', 'primary rain forests', 'slash & burn', 'water', 'road']">
+                <div class="checkbox-label" ng-repeat="interestLabel in interestLabels">
                   <input type="checkbox" id="{{ interestLabel }}">{{ interestLabel }}
                 </div>
               </div>
             </div>
             <hr />
             <div class="list-group-item">
+              <p>{{selectedLabels}}</p>
               <p>32,100 images are found in the map.</p>
             </div>
           </div>

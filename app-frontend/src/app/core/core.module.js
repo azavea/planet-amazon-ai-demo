@@ -21,4 +21,8 @@ require('./services/featureFlag.directive')(shared);
 
 require('./aws-sdk-s3.module.js');
 
+// raster-vision-planet-lab
+require('./services/chip.service')(shared);
+
+
 export default shared;
