@@ -14,6 +14,7 @@
         <div uib-accordion-group class="panel-default" is-open="status.open">
           <uib-accordion-heading>
             Searching Imagery<i style="float: right" class="icon-caret-down" ng-class="{'icon-caret-down': status.open, 'icon-caret-up': !status.open}"></i>
+          {{chipList}}
           </uib-accordion-heading>
 
           <!-- List Group -->
@@ -46,7 +47,7 @@
             </div>
             <hr />
             <div class="list-group-item">
-              <p>32,100 images are found in the map.</p>
+              <p>320 scenes and 34,000 chips are found in the map.</p>
             </div>
           </div>
           <!-- List Group -->
@@ -59,9 +60,9 @@
       <div class="list-group">
 
         <div class="list-group-item">
-          <label>Sorted by</label>
-          <input type="radio" name="sort-means" value="time" checked="checked">Creation Time
-          <input type="radio" name="sort-means" value="score">F2 Score
+          <label>Sorted by {{sort}}</label>
+          <input type="radio" name="sort-means" value="time" checked="checked" ng-model="sort" ng-click="$ctrl.chipService.getChips(selectedLabels, sort)">Creation Time
+          <input type="radio" name="sort-means" value="score" ng-model="sort" ng-click="$ctrl.chipService.getChips(selectedLabels, sort)">F2 Score
         </div>
 
         <div class="list-group-item">
@@ -75,10 +76,12 @@
 
               <!-- Thumbnail Hover Text -->
               <div ng-style="hoverStyle" style="height: 110px; width: 110px; position: absolute; text-align: center; visibility: hidden">
-
                 <p style="white-space: pre-line">
-                  Chip ID: {{chip.id}}
-                  Scene ID: {{chip.sceneId}}
+                  <!-- Chip ID: {{chip.id}} -->
+                  <p ng-if="sort === 'time'">Creation Time: {{chip.time}}</p>
+                  <p ng-if="sort === 'score'">F2 Score: {{chip.score}}</p>
+                  <!-- Scene ID: {{chip.sceneId}} -->
+                  Ranking: {{chip.ranking}}
                 </p>
                 <br />
                 <button style="height: 25px; width: 70px; padding: 0; font-size: small" type="button" class="btn btn-primary" ng-click="$ctrl.showDetails(chip.id);">
@@ -98,11 +101,11 @@
               <img ng-src="{{chip.source}}" alt="Thumbnail">
               <!-- Thumbnail   -->
             </div>
-            <div style="margin: auto; display: flex; flex-direction: column">
+            <div style="margin: auto; display: flex; flex-direction: column" ng-if="chipList.length !== 0">
               <button style="margin-bottom: 5px; width: 90px" type="button" class="btn btn-primary" ng-click="$ctrl.showNext()">
                 Next
               </button>
-              <button style="width: 90px" type="button" class="btn btn-primary" ng-show="chipList[0].id !== 0" ng-click="$ctrl.showPrevious()">
+              <button style="width: 90px" type="button" class="btn btn-primary" ng-if="chipList[0].ranking !== 1" ng-click="$ctrl.showPrevious()">
                 Previous
               </button>
             </div>

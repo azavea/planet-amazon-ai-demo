@@ -7,7 +7,7 @@ import NavBarController from './navBar.controller.js';
 
 const NavBarModule = angular.module('components.common.navBar', [dropdown]);
 
-NavBarModule.component('rfNavBar', NavBarComponent);
+NavBarModule.component('plNavBar', NavBarComponent);
 NavBarModule.controller('NavBarController', NavBarController);
 
 export default NavBarModule;

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 class HomeController {
     constructor($scope, $log, $cookies, $location, chipService, sceneService) {
         'ngInject';
@@ -10,10 +11,12 @@ class HomeController {
     }
     $onInit() {
         this.$scope.atmosLabels = ['clear', 'haze', 'partly cloudy', 'cloudy'];
-        this.$scope.interestLabels = ['agriculture', 'artisanal mine', 'blooming', 'bare ground', 'cultivation', 'blow down', 'habitation', 'selective logging', 'conventional mine', 'primary rain forests', 'slash & burn', 'water', 'road'];// eslint-disable-line 
+        this.$scope.interestLabels = ['agriculture', 'artisanal mine', 'blooming', 'bare ground', 'cultivation', 'blow down', 'habitation', 'selective logging', 'conventional mine', 'primary rain forests', 'slash & burn', 'water', 'road'];
         this.$scope.selectedLabels = [];
         this.$scope.chipList = [];
         this.$scope.sceneList = [];
+        // default by creation time, might think better way sorting
+        this.$scope.sort = 'time';
     }
 
     checkLabel(cat, val, id) {
@@ -25,12 +28,10 @@ class HomeController {
             switch (val) {
             case 'checked':
                 this.$scope.selectedLabels.push(label);
-
                 break;
             case 'unchecked':
-                this.$scope.selectedLabels = this.$scope.selectedLabels.filter(datum => datum !== label);//eslint-disable-line
+                this.$scope.selectedLabels = this.$scope.selectedLabels.filter(datum => datum !== label);
                 break;
-
             default:
                 break;
             }
@@ -40,12 +41,10 @@ class HomeController {
             switch (val) {
             case 'checked':
                 this.$scope.selectedLabels.push(label);
-
                 break;
             case 'unchecked':
-                this.$scope.selectedLabels = this.$scope.selectedLabels.filter(datum => datum !== label);//eslint-disable-line
+                this.$scope.selectedLabels = this.$scope.selectedLabels.filter(datum => datum !== label);
                 break;
-
             default:
                 break;
             }
@@ -54,7 +53,7 @@ class HomeController {
             break;
         }
         this.$scope.sceneList = this.sceneService.getScenes(this.$scope.selectedLabels);
-        this.$scope.chipList = this.chipService.getChips(this.$scope.selectedLabels);
+        this.$scope.chipList = this.chipService.getChips(this.$scope.selectedLabels, this.$scope.sort);
     }
 
     favListAdded(datum) {
@@ -64,13 +63,13 @@ class HomeController {
 
     showNext() {
         this.$scope.chipList.map((datum) => {
-            datum.id += 5;
+            datum.ranking += 5;
         });
     }
 
     showPrevious() {
         this.$scope.chipList.map((datum) => {
-            datum.id -= 5;
+            datum.ranking -= 5;
         });
     }
     // TODO: uibModal

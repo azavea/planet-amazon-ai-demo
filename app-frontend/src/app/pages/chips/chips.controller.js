@@ -1,3 +1,5 @@
+import Set from 'es6-set';
+
 export default class ChipsController {
     constructor($state, $log, $scope, $timeout, $cookies) {
         'ngInject';
@@ -28,7 +30,7 @@ export default class ChipsController {
     }
 
     removeFavorite(reqId) {
-        const toDelete = new Set([reqId]);//eslint-disable-line
+        const toDelete = new Set([reqId]);
         this.$scope.favList = this.$scope.favList.filter(obj => !toDelete.has(obj.id));
         this.getCount();
         this.$cookies.remove(reqId);

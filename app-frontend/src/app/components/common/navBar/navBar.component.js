@@ -1,8 +1,8 @@
 import navTpl from './navBar.html';
 
-const rfNavBar = {
+const plNavBar = {
     templateUrl: navTpl,
     controller: 'NavBarController'
 };
 
-export default rfNavBar;
+export default plNavBar;
