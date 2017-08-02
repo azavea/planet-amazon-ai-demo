@@ -8,14 +8,12 @@ class MapWrapper {
     // MapWrapper is a bare es6 class, so does not use angular injections
     constructor( // eslint-disable-line max-params
         leafletMap, mapId, imageOverlayService,
-        // datasourceService,
         options, thumbnailService
     ) {
         this.thumbnailService = thumbnailService;
         this.map = leafletMap;
         this.mapId = mapId;
         this.imageOverlayService = imageOverlayService;
-        // this.datasourceService = datasourceService;
         this.options = options;
         // counter is not global - each map has its own.
         // So don't combine lists of listeners across maps
@@ -220,12 +218,13 @@ class MapWrapper {
 
     /** Update a geojson layer. Overwrites current contents
      *  @param {string} id unique identifier for the geojson layer.
-     *  @param {Object} geoJson geojson feature(s) to replace with
+     *  @param {Object} geojson geojson feature(s) to replace with
+     *  @param {Object} options Any default options to apply to the geojson. Optional parameter
      *  @returns {this} map wrapper
      */
-    setGeojson(id, geoJson) {
+    setGeojson(id, geojson, options) {
         this.deleteGeojson(id);
-        this.addGeojson(id, geoJson);
+        this.addGeojson(id, geojson, options);
     }
 
     /** Get geojson layers for an id
@@ -463,31 +462,6 @@ class MapWrapper {
             let boundsGeoJson = L.geoJSON();
             boundsGeoJson.addData(scene.tileFootprint);
             let imageBounds = boundsGeoJson.getBounds();
-            // this.datasourceService.get(scene.datasource).then(d => {
-            //     let overlay = this.imageOverlayService.createNewImageOverlay(
-            //         thumbUrl,
-            //         imageBounds, {
-            //             opacity: 1,
-            //             dataMask: scene.dataFootprint,
-            //             thumbnail: thumbUrl,
-            //             attribution: `©${d.name} `
-            //         }
-            //     );
-            //     if (!persist) {
-            //         this.setLayer('thumbnail', overlay);
-            //     } else {
-            //         this.persistedThumbnails.set(scene.id, overlay);
-            //         this.setLayer(
-            //             'Selected Scenes',
-            //             Array.from(this.persistedThumbnails.values()),
-            //             true
-            //         );
-            //     }
-            //     this.setGeojson(
-            //         'thumbnail',
-            //         footprintGeojson
-            //     );
-            // });
         } else if (scene.dataFootprint) {
             this.deleteLayers('thumbnail');
             this.setGeojson(
@@ -526,14 +500,12 @@ class MapWrapper {
 export default (app) => {
     class MapService {
         constructor($q, imageOverlayService,
-            // datasourceService,
             thumbnailService) {
             'ngInject';
             this.maps = new Map();
             this._mapPromises = new Map();
             this.$q = $q;
             this.imageOverlayService = imageOverlayService;
-            // this.datasourceService = datasourceService;
             this.thumbnailService = thumbnailService;
         }
 
