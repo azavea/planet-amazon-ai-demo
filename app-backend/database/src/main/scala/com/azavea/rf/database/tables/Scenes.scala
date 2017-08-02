@@ -480,7 +480,8 @@ class ScenesTableQuery[M, U, C[_]](scenes: Scenes.TableQuery) extends LazyLoggin
         sceneParams.maxSunAzimuth.map(scene.sunAzimuth <= _),
         sceneParams.minSunElevation.map(scene.sunElevation >= _),
         sceneParams.maxSunElevation.map(scene.sunElevation <= _),
-        sceneParams.pointGeom.map(scene.dataFootprint.intersects(_))
+        sceneParams.pointGeom.map(scene.dataFootprint.intersects(_)),
+        sceneParams.labels.map(scene.labels.contains(_))
       )
       sceneFilterConditions
         .collect({case Some(criteria)  => criteria})
