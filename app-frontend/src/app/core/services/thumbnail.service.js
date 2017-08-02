@@ -1,8 +1,7 @@
 export default (app) => {
     class ThumbnailService {
-        constructor(authService) {
+        constructor() {
             'ngInject';
-            this.authService = authService;
         }
 
         getBestFitUrl(thumbnails, size) {
@@ -12,9 +11,6 @@ export default (app) => {
                 }
                 return thumb;
             }).url;
-            if (url.startsWith('/')) {
-                return `${url}?token=${this.authService.token()}`;
-            }
             return url;
         }
     }

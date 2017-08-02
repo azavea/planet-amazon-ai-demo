@@ -251,7 +251,7 @@ module.exports = function (_path) {
             }),
             new webpack.DefinePlugin({
                 'BUILDCONFIG': {
-                    APP_NAME: '\'RasterFoundry\'',
+                    APP_NAME: '\'PlanetLab\'',
                     BASEMAPS: basemaps,
                     API_HOST: '\'\''
                 }

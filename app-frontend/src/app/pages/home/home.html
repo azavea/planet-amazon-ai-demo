@@ -11,11 +11,10 @@
 
       <!-- Accordion Group -->
       <uib-accordion style="width: 40rem">
-        <div uib-accordion-group class="panel-default" is-open="status.open">
+        <div uib-accordion-group class="panel-default" is-open="accordionDefaultOpen">
           <uib-accordion-heading>
-            Searching Imagery<i style="float: right" class="icon-caret-down" ng-class="{'icon-caret-down': status.open, 'icon-caret-up': !status.open}"></i>
-          {{chipList}}
-          </uib-accordion-heading>
+            Searching Imagery<i style="float: right" class="icon-caret-down" ng-class="{'icon-caret-down': status.open, 'icon-caret-up': !status.open}"></i>         
+           </uib-accordion-heading>
 
           <!-- List Group -->
           <div class="list-group">
@@ -68,8 +67,8 @@
         <div class="list-group-item">
           <!-- Chip List -->
           <div style="width: 100%; display: flex; align-content: flex-start; flex-flow: row wrap">
-            <div style="margin: 2px" ng-model="chipList" ng-repeat="chip in chipList track by $index" ng-mouseover="hoverStyle={'visibility': 'visible'}"
-              ng-mouseleave="hoverStyle={'visibility': 'hidden'}">
+            <div style="margin: 2px" ng-model="chipList" ng-repeat="chip in chipList track by $index" ng-mouseover="$ctrl.highlightScenefromChip(chip.sceneId); hoverStyle={'visibility': 'visible'}"
+              ng-mouseleave="$ctrl.resetScenefromChip(chip.sceneId); hoverStyle={'visibility': 'hidden'}">
 
               <!-- ideally, generate unique ID from backend -->
               <!-- <div ng-repeat="chip in chipList track by chip.id"> -->
