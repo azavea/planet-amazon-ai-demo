@@ -1,0 +1,106 @@
+# Sass Cache
+.sass-cache
+
+# css map
+.css.map
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+
+# Ansible
+deployment/ansible/roles/azavea.*
+*.retry
+
+# Vagrant
+.vagrant
+
+# NodeJS / Browserify stuff
+node_modules/
+npm-debug.log
+
+# Emacs
+\#*#
+*~
+.#*
+
+# Vim
+.*.swp
+
+# MacOS
+.DS_Store
+
+# Scala
+*.class
+*.log
+
+# sbt specific
+.cache
+.history
+.lib/
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+/app-backend/project/.sbtboot
+/app-backend/project/.boot/
+/app-backend/project/.ivy/
+
+# Molecule
+.molecule/
+*__pycache__*
+
+# Scala-IDE specific
+.scala_dependencies
+.worksheet
+.ensime/*
+.ensime
+api-server/.ensime
+api-server/.ensime_cache/*
+/deployment/ansible/raster-foundry.retry
+/.ivy2/*
+.sbt/
+
+/.env
+
+.node_modules
+dist/
+
+/data
+/app-tasks/usr/local/airflow/logs/
+/app-tasks/usr/local/airflow/airflow-webserver.pid
+/app-tasks/usr/local/airflow/unittests.cfg
+.idea
+.ensime_cache
+/app-tasks/jars/rf-batch.jar
+/data

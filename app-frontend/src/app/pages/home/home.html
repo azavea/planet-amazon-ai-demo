@@ -1,0 +1,127 @@
+<div class="container column-stretch container-not-scrollable">
+  <div class="sidebar" ui-view>
+
+    <!-- Sidebar static / non scrolling -->
+    <div class="sidebar-static">
+      <!-- Sidebar Header -->
+      <!-- <div class="sidebar-header">
+        <h5 class="sidebar-title">Searching Imagery</h5>
+      </div> -->
+      <!-- Sidebar Header -->
+
+      <!-- Accordion Group -->
+      <uib-accordion style="width: 40rem">
+        <div uib-accordion-group class="panel-default" is-open="accordionDefaultOpen">
+          <uib-accordion-heading>
+            Searching Imagery<i style="float: right" class="icon-caret-down" ng-class="{'icon-caret-down': status.open, 'icon-caret-up': !status.open}"></i>         
+           </uib-accordion-heading>
+
+          <!-- List Group -->
+          <div class="list-group">
+            <div class="list-group-item">
+              <label>Atmospheric Condition</label>
+              <i class="icon-info"></i>
+
+            </div>
+            <div class="list-group-item">
+              <div class="checkbox-label-group">
+                <div class="checkbox-label" ng-repeat="atmosLabel in atmosLabels track by $index">
+                  <input type="checkbox" ng-model="val" ng-true-value="'checked'" ng-false-value="'unchecked'" ng-change="$ctrl.checkLabel('atmos', val, $index)">{{ atmosLabel }}
+                </div>
+              </div>
+            </div>
+
+            <hr />
+            <div class="list-group-item">
+              <label>Interests</label>
+              <i class="icon-info"></i>
+
+            </div>
+            <div class="list-group-item">
+              <div class="checkbox-label-group">
+                <div class="checkbox-label" ng-repeat="interestLabel in interestLabels">
+                  <input type="checkbox" ng-model="val" ng-true-value="'checked'" ng-false-value="'unchecked'" ng-change="$ctrl.checkLabel('interest', val, $index)">{{ interestLabel }}
+                </div>
+              </div>
+            </div>
+            <hr />
+            <div class="list-group-item">
+              <p>320 scenes and 34,000 chips are found in the map.</p>
+            </div>
+          </div>
+          <!-- List Group -->
+
+        </div>
+      </uib-accordion>
+      <!-- Accordion Group -->
+
+      <!-- List Group -->
+      <div class="list-group">
+
+        <div class="list-group-item">
+          <label>Sorted by {{sort}}</label>
+          <input type="radio" name="sort-means" value="time" checked="checked" ng-model="sort" ng-click="$ctrl.chipService.getChips(selectedLabels, sort)">Creation Time
+          <input type="radio" name="sort-means" value="score" ng-model="sort" ng-click="$ctrl.chipService.getChips(selectedLabels, sort)">F2 Score
+        </div>
+
+        <div class="list-group-item">
+          <!-- Chip List -->
+          <div style="width: 100%; display: flex; align-content: flex-start; flex-flow: row wrap">
+            <div style="margin: 2px" ng-model="chipList" ng-repeat="chip in chipList track by $index" ng-mouseover="$ctrl.highlightScenefromChip(chip.sceneId); hoverStyle={'visibility': 'visible'}"
+              ng-mouseleave="$ctrl.resetScenefromChip(chip.sceneId); hoverStyle={'visibility': 'hidden'}">
+
+              <!-- ideally, generate unique ID from backend -->
+              <!-- <div ng-repeat="chip in chipList track by chip.id"> -->
+
+              <!-- Thumbnail Hover Text -->
+              <div ng-style="hoverStyle" style="height: 110px; width: 110px; position: absolute; text-align: center; visibility: hidden">
+                <p style="white-space: pre-line">
+                  <!-- Chip ID: {{chip.id}} -->
+                  <p ng-if="sort === 'time'">Creation Time: {{chip.time}}</p>
+                  <p ng-if="sort === 'score'">F2 Score: {{chip.score}}</p>
+                  <!-- Scene ID: {{chip.sceneId}} -->
+                  Ranking: {{chip.ranking}}
+                </p>
+                <br />
+                <button style="height: 25px; width: 70px; padding: 0; font-size: small" type="button" class="btn btn-primary" ng-click="$ctrl.showDetails(chip.id);">
+                  Details
+                </button>
+              </div>
+              <!-- Thumbnail Hover Text -->
+
+              <!-- Favorite List Star -->
+              <div style="position: absolute" ng-switch="$ctrl.favListAdded(chip.id)">
+                <i class="icon-star" role="button" ng-switch-when="false" ng-click="$ctrl.addFavorite(chip.id)"></i>
+                <i class="icon-star-filled" role="button" ng-switch-when="true" ng-click="$ctrl.removeFavorite(chip.id)"></i>
+              </div>
+              <!-- Favorite List Star -->
+
+              <!-- Thumbnail -->
+              <img ng-src="{{chip.source}}" alt="Thumbnail">
+              <!-- Thumbnail   -->
+            </div>
+            <div style="margin: auto; display: flex; flex-direction: column" ng-if="chipList.length !== 0">
+              <button style="margin-bottom: 5px; width: 90px" type="button" class="btn btn-primary" ng-click="$ctrl.showNext()">
+                Next
+              </button>
+              <button style="width: 90px" type="button" class="btn btn-primary" ng-if="chipList[0].ranking !== 1" ng-click="$ctrl.showPrevious()">
+                Previous
+              </button>
+            </div>
+          </div>
+          <!-- Chip List -->
+        </div>
+      </div>
+      <!-- List Group -->
+    </div>
+    <!-- Sidebar static / non scrolling -->
+  </div>
+  <!-- Sidebar -->
+
+  <!-- Main map area -->
+  <div class="main">
+    <pl-map-container map-id="edit" ng-show="!$ctrl.showPreviewMap"></pl-map-container>
+    <pl-map-container map-id="preview" ng-if="$ctrl.showPreviewMap" initial-center="$ctrl.center" initial-zoom="$ctrl.zoom"></pl-map-container>
+  </div>
+  <!-- Main map area -->
+</div>

@@ -1,0 +1,63 @@
+<div class="container column-stretch container-not-scrollable">
+  <div class="sidebar" ui-view>
+
+    <!-- Sidebar static / non scrolling -->
+    <div class="sidebar-static">
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <h5 class="sidebar-title">Searching Imagery</h5>
+      </div>
+      <!-- Sidebar Header -->
+
+      <!-- List Group -->
+      <div class="list-group">
+        <div class="list-group-item">
+          <label>Atmospheric Condition</label>
+          <i class="icon-info"></i>
+
+        </div>
+        <div class="list-group-item">
+          <div class="checkbox-label-group">
+            <div class="checkbox-label" ng-repeat="atmosLabel in ['clear', 'haze', 'partly cloudy', 'cloudy']">
+              <input type="checkbox" id="{{ atmosLabel }}">{{ atmosLabel }}
+            </div>
+          </div>
+        </div>
+
+        <hr />
+        <div class="list-group-item">
+          <label>Interests</label>
+          <i class="icon-info"></i>
+        </div>
+        <div class="list-group-item">
+          <div class="checkbox-label-group">
+            <div class="checkbox-label" ng-repeat="interestLabel in ['agriculture', 'artisanal mine', 'blooming', 'bare ground', 'cultivation', 'blow down', 'habitation', 'selective logging', 'conventional mine', 'primary rain forests', 'slash & burn', 'water', 'road']">
+              <input type="checkbox" id="{{ interestLabel }}">{{ interestLabel }}
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div class="list-group-item">
+          <p>32,100 images are found in the map.</p>
+        </div>
+        <div class="list-group-item">
+          <label>Sorted by</label>
+          <input type="radio" name="sort-means" value="score">F2 Score
+          <input type="radio" name="sort-means" id="time">Created Time
+        </div>
+        <div class="list-group-item">
+          <label>Cards</label>
+        </div>
+      </div>
+      <!-- List Group -->
+    </div>
+  </div>
+  <!-- Sidebar -->
+
+  <!-- Main map area -->
+  <div class="main">
+    <rf-map-container map-id="edit" ng-show="!$ctrl.showPreviewMap"></rf-map-container>
+    <rf-map-container map-id="preview" ng-if="$ctrl.showPreviewMap" initial-center="$ctrl.center" initial-zoom="$ctrl.zoom"></rf-map-container>
+  </div>
+  <!-- Main map area -->
+</div>

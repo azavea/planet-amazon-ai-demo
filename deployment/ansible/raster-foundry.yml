@@ -1,0 +1,34 @@
+---
+- hosts: all
+  connection: local
+  become: True
+
+  pre_tasks:
+    - name: Update APT cache
+      apt: update_cache=yes cache_valid_time=3600
+
+  roles:
+    - { role: "azavea.python-security", when: 'ansible_python_version | version_compare("2.7.9", "<")' }
+    - role: "raster-foundry.docker"
+    - role: "raster-foundry.aws-cli"
+
+  tasks:
+    - name: Change directory on login
+      lineinfile: dest=/home/vagrant/.bashrc regexp=^raster-foundry_PROFILE line="cd /opt/raster-foundry/"
+
+    - name: Set Environment variable for AWS profile
+      lineinfile: dest=/etc/environment regexp=^AWS_PROFILE line="AWS_PROFILE={{ aws_profile }}"
+      when: aws_profile is defined
+
+    - name: Set Environment variable for Raster Foundry AWS Config Bucket
+      lineinfile: dest=/etc/environment regexp=^RF_SETTINGS_BUCKET line="RF_SETTINGS_BUCKET={{ rf_settings_bucket }}"
+      when: rf_settings_bucket is defined
+
+    - name: Set Environment variable for Raster Foundry AWS Artifacts Bucket
+      lineinfile: dest=/etc/environment regexp=^RF_ARTIFACTS_BUCKET
+                  line="RF_ARTIFACTS_BUCKET={{ rf_artifacts_bucket }}"
+      when: rf_artifacts_bucket is defined
+
+    - name: Set Environment variable for host user (used to namespace jars and other artifacts in development)
+      lineinfile: dest=/etc/environment regexp=^RF_HOST_USER line="RF_HOST_USER={{ host_user }}"
+      when: host_user is defined
