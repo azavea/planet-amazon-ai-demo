@@ -41,6 +41,7 @@ export default (app) => {
 
         getScenes(labels) {
             this.$log.info('scene service', labels);
+            this.$log.info(this.Scene.query());
             return [{
                 type: 'Feature',
                 properties: { 'sceneId': 1 },
