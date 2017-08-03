@@ -137,7 +137,7 @@ object Projects extends TableQuery(tag => new Projects(tag)) with LazyLogging {
       sceneParams=combinedParams.sceneParams.copy(project=Some(projectId))
     )
 
-    Scenes.listScenes(pageRequest, injectedParams, user)
+    Scenes.listScenes(pageRequest, injectedParams)//, user)
   }
 
   def listProjectSceneOrder(projectId: UUID, pageRequest: PageRequest, user: User)

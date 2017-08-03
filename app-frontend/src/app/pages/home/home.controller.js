@@ -13,34 +13,15 @@ class HomeController {
         this.getMap = () => mapService.getMap('edit');
     }
     $onInit() {
-        this.$scope.sceneId = '';
+        this.$scope.id = '';
         this.$scope.accordionDefaultOpen = false;
         this.$scope.atmosLabels = ['clear', 'haze', 'partly cloudy', 'cloudy'];
         this.$scope.interestLabels = ['agriculture', 'artisanal mine', 'blooming', 'bare ground', 'cultivation', 'blow down', 'habitation', 'selective logging', 'conventional mine', 'primary rain forests', 'slash & burn', 'water', 'road'];
         this.$scope.selectedLabels = [];
         this.$scope.chipList = [];
-        this.$scope.sceneList = [];
         // default by creation time, might think better way sorting
         this.$scope.sort = 'time';
-        this.$scope.scenes = [{
-            sceneId: 1,
-            dataFootprint: {
-                type: 'MultiPolygon',
-                coordinates: [[[[-52.31842, -10.808479999999996], [-51.937149999999995, -9.07622000000001], [-50.23816, -9.438040000000008], [-50.61014, -11.174150000000015], [-52.31842, -10.808479999999996]]]]
-            }
-        }, {
-            sceneId: 2,
-            dataFootprint: {
-                type: 'MultiPolygon',
-                coordinates: [[[[-51.31842, -10.808479999999996], [-50.937149999999995, -9.07622000000001], [-49.23816, -9.438040000000008], [-49.61014, -11.174150000000015], [-51.31842, -10.808479999999996]]]]
-            }
-        }, {
-            sceneId: 3,
-            dataFootprint: {
-                type: 'MultiPolygon',
-                coordinates: [[[[-50.31842, -10.808479999999996], [-49.937149999999995, -9.07622000000001], [-48.23816, -9.438040000000008], [-48.61014, -11.174150000000015], [-50.31842, -10.808479999999996]]]]
-            }
-        }];
+        this.$scope.scenes = [];
         // this.addUningestedScenesToMap(this.$scope.scenes);
         this.addScenesBoundsToMap(this.$scope.scenes);
     }
@@ -74,17 +55,18 @@ class HomeController {
         this.getMap().then((map) => {
             scenes.forEach((scene) => {
                 let defaultStyle = this.defaultStyled(scene);
+
                 // Add mouse event - hover effect to the layer;
-                map.setGeojson(String(scene.sceneId), Object.assign({}, defaultStyle, {
+                map.setGeojson(String(scene.id), Object.assign({}, defaultStyle, {
                     properties: {
                         options: {
-                            sceneId: String(scene.sceneId),
+                            id: String(scene.id),
                             onEachFeature: (feature, layer) => {
                                 layer.on('mouseover', () => {
                                     layer.setStyle({
                                         fillOpacity: 0.5
                                     });
-                                    this.$scope.sceneId = layer.feature.geometry.properties.options.sceneId;
+                                    this.$scope.id = layer.feature.geometry.properties.options.id;
                                 });
                                 layer.on('mouseout', () => {
                                     layer.setStyle({
@@ -95,6 +77,17 @@ class HomeController {
                         }
                     }
                 }));
+            });
+        });
+    }
+
+    removeScenesBoundsToMap(scenes) {
+        if (scenes.length === 0) {
+            return;
+        }
+        this.getMap().then((map) => {
+            scenes.forEach((scene) => {
+                map.deleteGeojson(String(scene.id));
             });
         });
     }
@@ -172,8 +165,16 @@ class HomeController {
         default:
             break;
         }
-        this.$scope.sceneList = this.sceneService.getScenes(this.$scope.selectedLabels);
+        this.removeScenesBoundsToMap(this.$scope.scenes);
+        this.sceneService.getScenes(this.$scope.selectedLabels)
+        .then((sceneResults) => {
+            let scenes = sceneResults.results;
+            this.$scope.scenes = scenes;
+            if (this.$scope.selectedLabels.length !== 0) {
+                this.addScenesBoundsToMap(this.$scope.scenes);
+            }
 
+        });
         this.$scope.chipList = this.chipService.getChips(this.$scope.selectedLabels, this.$scope.sort);
     }
 

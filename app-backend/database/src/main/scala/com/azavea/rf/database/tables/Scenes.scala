@@ -55,6 +55,7 @@ class Scenes(_tableTag: Tag) extends Table[Scene](_tableTag, "scenes")
   val metadataFiles: Rep[List[String]] = column[List[String]]("metadata_files", O.Length(2147483647,varying=false), O.Default(List.empty))
   val ingestLocation: Rep[Option[String]] = column[Option[String]]("ingest_location", O.Default(None))
   val ingestStatus: Rep[IngestStatus] = column[IngestStatus]("ingest_status")
+  val labels: Rep[List[String]] = column[List[String]]("labels", O.Length(2147483647,varying=false))
 
   /** Foreign key referencing Organizations (database name scenes_organization_id_fkey) */
   lazy val organizationsFk = foreignKey("scenes_organization_id_fkey", organizationId, Organizations)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
@@ -85,7 +86,8 @@ class Scenes(_tableTag: Tag) extends Table[Scene](_tableTag, "scenes")
     List[String],
     Option[String],
     SceneFilterFields.TupleType,
-    SceneStatusFields.TupleType
+    SceneStatusFields.TupleType,
+    List[String]
   )
 
   def toModel: SceneTupleType => Scene = { sceneTuple =>
@@ -108,7 +110,8 @@ class Scenes(_tableTag: Tag) extends Table[Scene](_tableTag, "scenes")
       sceneTuple._16, // metadataFiles
       sceneTuple._17, // ingestLocation
       SceneFilterFields.tupled.apply(sceneTuple._18), // filterFields
-      SceneStatusFields.tupled.apply(sceneTuple._19) // statusFields
+      SceneStatusFields.tupled.apply(sceneTuple._19), // statusFields
+      sceneTuple._20 // labels
     )
   }
 
@@ -135,8 +138,9 @@ class Scenes(_tableTag: Tag) extends Table[Scene](_tableTag, "scenes")
         scene.ingestLocation,
         // scalastyle:off
         SceneFilterFields.unapply(scene.filterFields).get,
-        SceneStatusFields.unapply(scene.statusFields).get
+        SceneStatusFields.unapply(scene.statusFields).get,
         // scalastyle:on
+        scene.labels
       )
     }
   }
@@ -160,7 +164,8 @@ class Scenes(_tableTag: Tag) extends Table[Scene](_tableTag, "scenes")
     metadataFiles,
     ingestLocation,
     (cloudCover, acquisitionDate, sunAzimuth, sunElevation),
-    (thumbnailStatus, boundaryStatus, ingestStatus)
+    (thumbnailStatus, boundaryStatus, ingestStatus),
+    labels
   ).shaped[SceneTupleType]
 
   def * = sceneShapedValue <> (toModel, toTuple)
@@ -292,11 +297,12 @@ object Scenes extends TableQuery(tag => new Scenes(tag)) with LazyLogging {
   }
 
   /** Get scenes given a page request and query parameters */
-  def listScenes(pageRequest: PageRequest, combinedParams: CombinedSceneQueryParams, user: User)
+  def listScenes(pageRequest: PageRequest, combinedParams: CombinedSceneQueryParams)//, user: User)
                 (implicit database: DB): Future[PaginatedResponse[Scene.WithRelated]] = {
 
     val scenesQueryResult = database.db.run {
-      val action = Scenes.filterUserVisibility(user)
+      val action = Scenes
+          // .filterUserVisibility(user)
           .joinWithRelated
           .page(combinedParams, pageRequest)
           .result
@@ -306,7 +312,7 @@ object Scenes extends TableQuery(tag => new Scenes(tag)) with LazyLogging {
 
     val totalScenesQueryResult = database.db.run {
       val action = Scenes.filterScenes(combinedParams)
-        .filterUserVisibility(user)
+        // .filterUserVisibility(user)
         .length
         .result
       logger.debug(s"Total Query for scenes -- SQL: ${action.statements.headOption}")
@@ -527,7 +533,7 @@ class ScenesTableQuery[M, U, C[_]](scenes: Scenes.TableQuery) extends LazyLoggin
         )
         .reduceLeftOption(_ || _)
         .getOrElse(true: Rep[Boolean])
-    }
+    }.filter { _.labels @> sceneParams.labels.toList }
 
     sceneParams.project match {
       case Some(projectId) => {

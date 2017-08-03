@@ -217,7 +217,8 @@ case class ImportLandsat8C1(startDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
               thumbnailStatus = JobStatus.Success,
               boundaryStatus = JobStatus.Success,
               ingestStatus = IngestStatus.NotIngested
-            )
+            ),
+            List[String]()
           )
           val future =
             Scenes.insertScene(scene, user).map(_.toScene).recover {
