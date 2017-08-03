@@ -297,11 +297,12 @@ object Scenes extends TableQuery(tag => new Scenes(tag)) with LazyLogging {
   }
 
   /** Get scenes given a page request and query parameters */
-  def listScenes(pageRequest: PageRequest, combinedParams: CombinedSceneQueryParams, user: User)
+  def listScenes(pageRequest: PageRequest, combinedParams: CombinedSceneQueryParams)//, user: User)
                 (implicit database: DB): Future[PaginatedResponse[Scene.WithRelated]] = {
 
     val scenesQueryResult = database.db.run {
-      val action = Scenes.filterUserVisibility(user)
+      val action = Scenes
+          // .filterUserVisibility(user)
           .joinWithRelated
           .page(combinedParams, pageRequest)
           .result
@@ -311,7 +312,7 @@ object Scenes extends TableQuery(tag => new Scenes(tag)) with LazyLogging {
 
     val totalScenesQueryResult = database.db.run {
       val action = Scenes.filterScenes(combinedParams)
-        .filterUserVisibility(user)
+        // .filterUserVisibility(user)
         .length
         .result
       logger.debug(s"Total Query for scenes -- SQL: ${action.statements.headOption}")
