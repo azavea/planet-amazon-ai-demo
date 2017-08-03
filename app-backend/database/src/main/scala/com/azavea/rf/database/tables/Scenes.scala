@@ -480,8 +480,7 @@ class ScenesTableQuery[M, U, C[_]](scenes: Scenes.TableQuery) extends LazyLoggin
         sceneParams.maxSunAzimuth.map(scene.sunAzimuth <= _),
         sceneParams.minSunElevation.map(scene.sunElevation >= _),
         sceneParams.maxSunElevation.map(scene.sunElevation <= _),
-        sceneParams.pointGeom.map(scene.dataFootprint.intersects(_)),
-        sceneParams.labels.map(scene.labels.contains(_))
+        sceneParams.pointGeom.map(scene.dataFootprint.intersects(_))
       )
       sceneFilterConditions
         .collect({case Some(criteria)  => criteria})
@@ -533,6 +532,13 @@ class ScenesTableQuery[M, U, C[_]](scenes: Scenes.TableQuery) extends LazyLoggin
         )
         .reduceLeftOption(_ || _)
         .getOrElse(true: Rep[Boolean])
+    // }.filter { scene =>
+    //   sceneParams.labels
+    //     .map( label =>
+    //       scene.labels.contains(label)
+    //     )
+    //     .reduceLeftOption(_ || _)
+    //     .getOrElse(true: Rep[Boolean])
     }
 
     sceneParams.project match {
