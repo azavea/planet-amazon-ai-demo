@@ -24,7 +24,8 @@ export default (app) => {
         query(params = {}) {
             let validParams = Object.assign(
                 params,
-                { minCloudCover: params.minCloudCover ? params.minCloudCover : 0 }
+                {}
+                // { minCloudCover: params.minCloudCover ? params.minCloudCover : 0 }
             );
             return this.Scene.query(validParams).$promise;
         }
@@ -41,36 +42,7 @@ export default (app) => {
 
         getScenes(labels) {
             this.$log.info('scene service', labels);
-            this.$log.info(this.Scene.query());
-            return [{
-                type: 'Feature',
-                properties: { 'sceneId': 1 },
-                geometry: {
-                    type: 'Polygon',
-                    coordinates: [
-                        [
-                            -68.5986328125,
-                            -7.406047717076258
-                        ],
-                        [
-                            -64.7314453125,
-                            -7.406047717076258
-                        ],
-                        [
-                            -64.7314453125,
-                            -4.434044005032582
-                        ],
-                        [
-                            -68.5986328125,
-                            -4.434044005032582
-                        ],
-                        [
-                            -68.5986328125,
-                            -7.406047717076258
-                        ]
-                    ]
-                }
-            }];
+            return this.query({labels: labels});
         }
     }
     app.service('sceneService', SceneService);
