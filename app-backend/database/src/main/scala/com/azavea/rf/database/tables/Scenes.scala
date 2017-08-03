@@ -533,14 +533,7 @@ class ScenesTableQuery[M, U, C[_]](scenes: Scenes.TableQuery) extends LazyLoggin
         )
         .reduceLeftOption(_ || _)
         .getOrElse(true: Rep[Boolean])
-    // }.filter { scene =>
-    //   sceneParams.labels
-    //     .map( label =>
-    //       scene.labels.contains(label)
-    //     )
-    //     .reduceLeftOption(_ || _)
-    //     .getOrElse(true: Rep[Boolean])
-    }
+    }.filter { _.labels @> sceneParams.labels.toList }
 
     sceneParams.project match {
       case Some(projectId) => {
