@@ -46,7 +46,6 @@ object SceneStatusFields {
 @JsonCodec
 case class Scene(
   id: UUID,
-  createdAt: java.sql.Timestamp,
   createdBy: String,
   modifiedAt: java.sql.Timestamp,
   modifiedBy: String,
@@ -72,7 +71,6 @@ case class Scene(
     thumbnails: Seq[Thumbnail]
   ): Scene.WithRelated = Scene.WithRelated(
     this.id,
-    this.createdAt,
     this.createdBy,
     this.modifiedAt,
     this.modifiedBy,
@@ -125,7 +123,6 @@ object Scene {
 
       Scene(
         id.getOrElse(UUID.randomUUID),
-        now, // createdAt
         user.id, // createdBy
         now, // modifiedAt
         user.id, // modifiedBy
@@ -150,7 +147,6 @@ object Scene {
   @JsonCodec
   case class WithRelated(
     id: UUID,
-    createdAt: Timestamp,
     createdBy: String,
     modifiedAt: Timestamp,
     modifiedBy: String,
@@ -174,7 +170,6 @@ object Scene {
     def toScene: Scene =
       Scene(
         id,
-        createdAt,
         createdBy,
         modifiedAt,
         modifiedBy,
