@@ -32,7 +32,7 @@ class Chips(_tableTag: Tag) extends Table[Chip](_tableTag, "chips")
   val y: Rep[Int] = column[Int]("y")
   val scene: Rep[java.util.UUID] = column[java.util.UUID]("scene")
   val url: Rep[String] = column[String]("url", O.Length(255,varying=true))
-  val labelProbabilities: Rep[ChipSize] = column[ChipSize]("label_probabilities")
+  val labelProbabilities: Rep[ChipLabelProbabilities] = column[ChipLabelProbabilities]("label_probabilities")
 
   /** Foreign key referencing Organizations (database name chips_organization_id_fkey) */
   lazy val organizationsFk = foreignKey("chips_organization_id_fkey", organizationId, Organizations)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
