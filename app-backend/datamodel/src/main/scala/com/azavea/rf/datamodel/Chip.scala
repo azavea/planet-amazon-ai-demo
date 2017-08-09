@@ -7,7 +7,7 @@ import io.circe._
 import io.circe.generic.JsonCodec
 
 @JsonCodec
-case class PlanetAmazonKaggleLabelProbabilities(
+case class ChipLabelProbabilities(
   agriculture: Float,
   artisinalMine: Float,
   bareGround: Float,
@@ -27,8 +27,8 @@ case class PlanetAmazonKaggleLabelProbabilities(
   water: Float
 )
 
-object PlanetAmazonKaggleLabelProbabilities {
-  def tupled = (PlanetAmazonKaggleLabelProbabilities.apply _).tupled
+object ChipLabelProbabilities {
+  def tupled = (ChipLabelProbabilities.apply _).tupled
 
   type TupleType = (
     Float,
@@ -61,7 +61,7 @@ case class Chip(
   y: Int,
   sceneId: UUID,
   url: String,
-  labelProbabilities: PlanetAmazonKaggleLabelProbabilities
+  labelProbabilities: ChipLabelProbabilities
 ) {
   def toChip = this
 }
@@ -81,7 +81,7 @@ object Chip {
     y: Int,
     sceneId: UUID,
     url: String,
-    labelProbabilities: PlanetAmazonKaggleLabelProbabilities
+    labelProbabilities: ChipLabelProbabilities
   ) {
     def toChip: Chip = {
       val now = new Timestamp((new java.util.Date).getTime)
@@ -108,7 +108,7 @@ object Chip {
     y: Int,
     sceneId: UUID,
     url: String,
-    labelProbabilities: PlanetAmazonKaggleLabelProbabilities
+    labelProbabilities: ChipLabelProbabilities
   ) {
     def toChip(userId: String): Chip = {
       val now = new Timestamp((new java.util.Date()).getTime())
