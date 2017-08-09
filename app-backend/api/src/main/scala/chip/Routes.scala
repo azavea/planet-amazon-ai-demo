@@ -1,7 +1,7 @@
-package com.azavea.rf.api.thumbnail
+package com.azavea.rf.api.chip
 
 import com.azavea.rf.common.{UserErrorHandler, Authentication, S3, CommonHandlers}
-import com.azavea.rf.database.tables.Thumbnails
+import com.azavea.rf.database.tables.Chips
 import com.azavea.rf.database.Database
 import com.azavea.rf.datamodel._
 import com.azavea.rf.api.utils.Config
@@ -15,8 +15,8 @@ import kamon.akka.http.KamonTraceDirectives
 import java.util.UUID
 import java.net.URI
 
-trait ThumbnailRoutes extends Authentication
-    with ThumbnailQueryParameterDirective
+trait ChipRoutes extends Authentication
+    with ChipQueryParameterDirective
     with PaginationDirectives
     with CommonHandlers
     with UserErrorHandler
@@ -25,69 +25,69 @@ trait ThumbnailRoutes extends Authentication
 
   implicit def database: Database
 
-  val thumbnailRoutes: Route = handleExceptions(userExceptionHandler) {
+  val chipRoutes: Route = handleExceptions(userExceptionHandler) {
     pathEndOrSingleSlash {
-      get { listThumbnails } ~
+      get { listChips } ~
       post {
-        traceName("thumbnails-list") {
-          createThumbnail
+        traceName("chips-list") {
+          createChip
         }
       }
     } ~
-    pathPrefix(JavaUUID) { thumbnailId =>
+    pathPrefix(JavaUUID) { chipId =>
       pathEndOrSingleSlash {
-        get { traceName("thumbnails-detail") {
-          getThumbnail(thumbnailId) }
+        get { traceName("chips-detail") {
+          getChip(chipId) }
         } ~
-        put { updateThumbnail(thumbnailId) } ~
-        delete { deleteThumbnail(thumbnailId) }
+        put { updateChip(chipId) } ~
+        delete { deleteChip(chipId) }
       }
     } ~
-    pathPrefix(Segment) { thumbnailPath =>
+    pathPrefix(Segment) { chipPath =>
       pathEndOrSingleSlash {
-        get { getThumbnailImage(thumbnailPath) }
+        get { getChipImage(chipPath) }
       }
     }
   }
 
-  val thumbnailImageRoutes: Route = handleExceptions(userExceptionHandler) {
-    pathPrefix(Segment) { thumbnailPath =>
+  val chipImageRoutes: Route = handleExceptions(userExceptionHandler) {
+    pathPrefix(Segment) { chipPath =>
       pathEndOrSingleSlash {
-        get { getThumbnailImage(thumbnailPath) }
+        get { getChipImage(chipPath) }
       }
     }
   }
 
-  def listThumbnails: Route = authenticate { user =>
-    (withPagination & thumbnailSpecificQueryParameters) { (page, thumbnailParams) =>
+  def listChips: Route = authenticate { user =>
+    (withPagination & chipSpecificQueryParameters) { (page, chipParams) =>
       complete {
-        Thumbnails.listThumbnails(page, thumbnailParams, user)
+        Chips.listChips(page, chipParams, user)
       }
     }
   }
 
-  def createThumbnail: Route = authenticate { user =>
-    entity(as[Thumbnail.Create]) { newThumbnail =>
-      authorize(user.isInRootOrSameOrganizationAs(newThumbnail)) {
-        onSuccess(Thumbnails.insertThumbnail(newThumbnail.toThumbnail)) { thumbnail =>
-          complete(StatusCodes.Created, thumbnail)
+  def createChip: Route = authenticate { user =>
+    entity(as[Chip.Create]) { newChip =>
+      authorize(user.isInRootOrSameOrganizationAs(newChip)) {
+        onSuccess(Chips.insertChip(newChip.toChip)) { chip =>
+          complete(StatusCodes.Created, chip)
         }
       }
     }
   }
 
-  def getThumbnail(thumbnailId: UUID): Route = authenticate { user =>
+  def getChip(chipId: UUID): Route = authenticate { user =>
     withPagination { page =>
       rejectEmptyResponse {
         complete {
-          Thumbnails.getThumbnail(thumbnailId, user)
+          Chips.getChip(chipId, user)
         }
       }
     }
   }
 
-  def getThumbnailImage(thumbnailPath: String): Route = validateTokenParameter { token =>
-    var uriString = s"http://s3.amazonaws.com/${thumbnailBucket}/${thumbnailPath}"
+  def getChipImage(chipPath: String): Route = validateTokenParameter { token =>
+    var uriString = s"http://s3.amazonaws.com/${chipBucket}/${chipPath}"
     val uri = new URI(uriString)
     val s3Object = S3.getObject(uri)
     val metaData = S3.getObjectMetadata(s3Object)
@@ -100,18 +100,18 @@ trait ThumbnailRoutes extends Authentication
     ))
   }
 
-  def updateThumbnail(thumbnailId: UUID): Route = authenticate { user =>
-    entity(as[Thumbnail]) { updatedThumbnail =>
-      authorize(user.isInRootOrSameOrganizationAs(updatedThumbnail)) {
-        onSuccess(Thumbnails.updateThumbnail(updatedThumbnail, thumbnailId, user)) {
+  def updateChip(chipId: UUID): Route = authenticate { user =>
+    entity(as[Chip]) { updatedChip =>
+      authorize(user.isInRootOrSameOrganizationAs(updatedChip)) {
+        onSuccess(Chips.updateChip(updatedChip, chipId, user)) {
           completeSingleOrNotFound
         }
       }
     }
   }
 
-  def deleteThumbnail(thumbnailId: UUID): Route = authenticate { user =>
-    onSuccess(Thumbnails.deleteThumbnail(thumbnailId, user)) {
+  def deleteChip(chipId: UUID): Route = authenticate { user =>
+    onSuccess(Chips.deleteChip(chipId, user)) {
       completeSingleOrNotFound
     }
   }
