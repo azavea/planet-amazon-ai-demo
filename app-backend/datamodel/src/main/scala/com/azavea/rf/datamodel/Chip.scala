@@ -46,7 +46,7 @@ object SceneStatusFields {
 @JsonCodec
 case class Chip(
   id: UUID,
-  ingestSizeBytes: Int,
+  ingestSizeBytes: Int, // needed?
   datasource: UUID,
   sceneMetadata: Json,
   tileFootprint: Option[Projected[Geometry]] = None,
@@ -63,7 +63,7 @@ case class Chip(
     thumbnails: Seq[Thumbnail]
   ): Scene.WithRelated = Scene.WithRelated(
     this.id,
-    this.ingestSizeBytes,
+    this.ingestSizeBytes, // needed?
     this.datasource,
     this.sceneMetadata,
     this.tileFootprint,
@@ -83,7 +83,7 @@ object Scene {
   @JsonCodec
   case class Create(
     id: Option[UUID],
-    ingestSizeBytes: Int,
+    ingestSizeBytes: Int, // needed?
     datasource: UUID,
     sceneMetadata: Json,
     tileFootprint: Option[Projected[Geometry]],
@@ -98,7 +98,7 @@ object Scene {
     def toScene(user: User): Scene = {
       Scene(
         id.getOrElse(UUID.randomUUID),
-        ingestSizeBytes,
+        ingestSizeBytes, // needed?
         datasource,
         sceneMetadata,
         tileFootprint,
@@ -114,7 +114,7 @@ object Scene {
   @JsonCodec
   case class WithRelated(
     id: UUID,
-    ingestSizeBytes: Int,
+    ingestSizeBytes: Int, // needed?
     datasource: UUID,
     sceneMetadata: Json,
     tileFootprint: Option[Projected[Geometry]],
@@ -129,7 +129,7 @@ object Scene {
     def toScene: Scene =
       Scene(
         id,
-        ingestSizeBytes,
+        ingestSizeBytes, // needed?
         datasource,
         sceneMetadata,
         tileFootprint,
