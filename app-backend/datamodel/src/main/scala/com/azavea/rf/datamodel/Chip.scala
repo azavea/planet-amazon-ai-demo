@@ -46,7 +46,6 @@ object SceneStatusFields {
 @JsonCodec
 case class Chip(
   id: UUID,
-  modifiedBy: String,
   owner: String,
   organizationId: UUID,
   ingestSizeBytes: Int,
@@ -69,7 +68,6 @@ case class Chip(
     thumbnails: Seq[Thumbnail]
   ): Scene.WithRelated = Scene.WithRelated(
     this.id,
-    this.modifiedBy,
     this.owner,
     this.organizationId,
     this.ingestSizeBytes,
@@ -117,7 +115,6 @@ object Scene {
 
       Scene(
         id.getOrElse(UUID.randomUUID),
-        user.id, // modifiedBy
         ownerId, // owner
         organizationId,
         ingestSizeBytes,
@@ -139,7 +136,6 @@ object Scene {
   @JsonCodec
   case class WithRelated(
     id: UUID,
-    modifiedBy: String,
     owner: String,
     organizationId: UUID,
     ingestSizeBytes: Int,
@@ -160,7 +156,6 @@ object Scene {
     def toScene: Scene =
       Scene(
         id,
-        modifiedBy,
         owner,
         organizationId,
         ingestSizeBytes,
