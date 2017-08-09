@@ -87,7 +87,7 @@ trait ChipRoutes extends Authentication
   }
 
   def getChipImage(chipPath: String): Route = validateTokenParameter { token =>
-    var uriString = s"http://s3.amazonaws.com/${chipBucket}/${chipPath}"
+    var uriString = s"http://s3.amazonaws.com/"//${chipBucket}/${chipPath}"
     val uri = new URI(uriString)
     val s3Object = S3.getObject(uri)
     val metaData = S3.getObjectMetadata(s3Object)
