@@ -170,6 +170,7 @@ case class ImportSentinel2(startDate: LocalDate = LocalDate.now(ZoneOffset.UTC))
                         metadataFiles   = metadataFiles,
                         images          = images,
                         thumbnails      = createThumbnails(sceneId, tilePath),
+                        chips           = List[Chip.Identified](),
                         ingestLocation  = None,
                         filterFields    = SceneFilterFields(
                           cloudCover      = cloudCover,
@@ -177,6 +178,7 @@ case class ImportSentinel2(startDate: LocalDate = LocalDate.now(ZoneOffset.UTC))
                         ),
                         statusFields = SceneStatusFields(
                           thumbnailStatus = JobStatus.Success,
+                          chipStatus = JobStatus.Success,
                           boundaryStatus  = JobStatus.Success,
                           ingestStatus    = IngestStatus.NotIngested
                         )
