@@ -12,7 +12,7 @@ case class Chip(
   createdAt: Timestamp,
   modifiedAt: Timestamp,
   organizationId: UUID,
-  x: Int,
+  widthPx: Int,
   heightPx: Int,
   sceneId: UUID,
   url: String,
@@ -33,7 +33,7 @@ object Chip {
   case class Create(
     organizationId: UUID,
     thumbnailSize: ThumbnailSize,
-    y: Int,
+    widthPx: Int,
     heightPx: Int,
     sceneId: UUID,
     url: String
@@ -45,7 +45,7 @@ object Chip {
         now, // created at,
         now, // modified at,
         organizationId,
-        y, // width in pixels
+        widthPx, // width in pixels
         heightPx, // height in pixels
         sceneId,
         url,
@@ -60,7 +60,7 @@ object Chip {
     id: Option[UUID],
     organizationId: UUID,
     thumbnailSize: ThumbnailSize,
-    y: Int,
+    widthPx: Int,
     heightPx: Int,
     sceneId: UUID,
     url: String
@@ -72,7 +72,7 @@ object Chip {
         now, // createdAt
         now, // modifiedAt
         this.organizationId,
-        this.y,
+        this.widthPx,
         this.heightPx,
         this.sceneId,
         this.url,
