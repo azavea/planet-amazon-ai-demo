@@ -175,7 +175,7 @@ object Scene {
     metadataFiles: List[String],
     images: Seq[Image.WithRelated],
     thumbnails: Seq[Thumbnail],
-    chips: Seq[Chips],
+    chips: Seq[Chip],
     ingestLocation: Option[String],
     filterFields: SceneFilterFields = new SceneFilterFields(),
     statusFields: SceneStatusFields
@@ -214,7 +214,7 @@ object Scene {
       * information
       */
     @SuppressWarnings(Array("TraversableHead"))
-    def fromRecords(records: Seq[(Scene, Option[Image], Option[Band], Option[Thumbnail])])
+    def fromRecords(records: Seq[(Scene, Option[Image], Option[Band], Option[Thumbnail], Option[Chip])])
       : Iterable[Scene.WithRelated] = {
       val distinctScenes = records.map(_._1.id).distinct
       val groupedScenes = records.map(_._1).groupBy(_.id)
@@ -222,15 +222,15 @@ object Scene {
       val groupedBands = records.flatMap(_._3).distinct.groupBy(_.image)
 
       distinctScenes.map { scene =>
-        val (seqImages, seqThumbnails) = groupedRecords(scene).map {
-          case (_, image, _, thumbnail) => (image, thumbnail)
-        }.unzip
+        val (seqImages, seqThumbnails, seqChips) = groupedRecords(scene).map {
+          case (_, image, _, thumbnail, chip) => (image, thumbnail, chip)
+        }.unzip3
         val imagesWithComponents: Seq[Image.WithRelated] = seqImages.flatten.distinct.map {
           image => image.withRelatedFromComponents(groupedBands.getOrElse(image.id, Seq[Band]()))
         }
         groupedScenes.get(scene) match {
           case Some(scene) => scene.head.withRelatedFromComponents(
-            imagesWithComponents, seqThumbnails.flatten.distinct
+            imagesWithComponents, seqThumbnails.flatten.distinct, seqChips.flatten.distinct
           )
           case _ => throw new Exception("This is impossible")
         }
