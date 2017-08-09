@@ -16,7 +16,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /** Table description of table thumbnails. Objects of this class serve as prototypes for rows in queries. */
-class Thumbnails(_tableTag: Tag) extends Table[Thumbnail](_tableTag, "thumbnails")
+class Chips(_tableTag: Tag) extends Table[Thumbnail](_tableTag, "thumbnails")
                                          with OrganizationFkFields
                                          with TimestampFields
                                          with VisibilityField
@@ -40,16 +40,16 @@ class Thumbnails(_tableTag: Tag) extends Table[Thumbnail](_tableTag, "thumbnails
   lazy val scenesFk = foreignKey("thumbnails_scene_fkey", scene, Scenes)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
 }
 
-/** Collection-like TableQuery object for table Thumbnails */
-object Thumbnails extends TableQuery(tag => new Thumbnails(tag)) with LazyLogging {
-  type TableQuery = Query[Thumbnails, Thumbnail, Seq]
+/** Collection-like TableQuery object for table Chips */
+object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
+  type TableQuery = Query[Chips, Thumbnail, Seq]
 
-  implicit val projectsSorter: QuerySorter[Thumbnails] =
+  implicit val projectsSorter: QuerySorter[Chips] =
     new QuerySorter(
-      new OrganizationFkSort(identity[Thumbnails]),
-      new TimestampSort(identity[Thumbnails]))
+      new OrganizationFkSort(identity[Chips]),
+      new TimestampSort(identity[Chips]))
 
-  implicit class withThumbnailsQuery[M, U, C[_]](thumbnails: Thumbnails.TableQuery) extends
+  implicit class withChipsQuery[M, U, C[_]](thumbnails: Chips.TableQuery) extends
       ThumbnailDefaultQuery[M, U, C](thumbnails)
 
   /** Insert a thumbnail into the database
@@ -59,7 +59,7 @@ object Thumbnails extends TableQuery(tag => new Thumbnails(tag)) with LazyLoggin
   def insertThumbnail(thumbnail: Thumbnail)
                      (implicit database: DB): Future[Thumbnail] = {
 
-    val action = Thumbnails.forceInsert(thumbnail)
+    val action = Chips.forceInsert(thumbnail)
     logger.debug(s"Inserting thumbnail with: ${action.statements.headOption}")
     database.db.run {
       action.map( _ => thumbnail)
@@ -74,7 +74,7 @@ object Thumbnails extends TableQuery(tag => new Thumbnails(tag)) with LazyLoggin
   def getThumbnail(thumbnailId: UUID, user: User)
                   (implicit database: DB): Future[Option[Thumbnail]] = {
 
-    val action = Thumbnails
+    val action = Chips
                    .filterToSharedOrganizationIfNotInRoot(user)
                    .filter(_.id === thumbnailId)
                    .result
@@ -84,28 +84,28 @@ object Thumbnails extends TableQuery(tag => new Thumbnails(tag)) with LazyLoggin
     }
   }
 
-  def listThumbnails(pageRequest: PageRequest, queryParams: ThumbnailQueryParameters, user: User)
+  def listChips(pageRequest: PageRequest, queryParams: ThumbnailQueryParameters, user: User)
                     (implicit database: DB): Future[PaginatedResponse[Thumbnail]] = {
 
-    val thumbnails = Thumbnails
+    val thumbnails = Chips
                        .filterToSharedOrganizationIfNotInRoot(user)
                        .filterBySceneParams(queryParams)
 
-    val paginatedThumbnails = database.db.run {
+    val paginatedChips = database.db.run {
       val action = thumbnails.page(pageRequest).result
       logger.debug(s"Query for thumbnails -- SQL ${action.statements.headOption}")
       action
     }
 
-    val totalThumbnailsQuery = database.db.run { thumbnails.length.result }
+    val totalChipsQuery = database.db.run { thumbnails.length.result }
 
     for {
-      totalThumbnails <- totalThumbnailsQuery
-      thumbnails <- paginatedThumbnails
+      totalChips <- totalChipsQuery
+      thumbnails <- paginatedChips
     } yield {
-      val hasNext = (pageRequest.offset + 1) * pageRequest.limit < totalThumbnails
+      val hasNext = (pageRequest.offset + 1) * pageRequest.limit < totalChips
       val hasPrevious = pageRequest.offset > 0
-      PaginatedResponse[Thumbnail](totalThumbnails, hasPrevious, hasNext,
+      PaginatedResponse[Thumbnail](totalChips, hasPrevious, hasNext,
         pageRequest.offset, pageRequest.limit, thumbnails)
     }
   }
@@ -118,7 +118,7 @@ object Thumbnails extends TableQuery(tag => new Thumbnails(tag)) with LazyLoggin
   def deleteThumbnail(thumbnailId: UUID, user: User)
                      (implicit database: DB): Future[Int] = {
 
-    val action = Thumbnails
+    val action = Chips
                    .filterToSharedOrganizationIfNotInRoot(user)
                    .filter(_.id === thumbnailId)
                    .delete
@@ -146,7 +146,7 @@ object Thumbnails extends TableQuery(tag => new Thumbnails(tag)) with LazyLoggin
     val updateTime = new Timestamp((new java.util.Date).getTime)
 
     val updateThumbnailQuery = for {
-      updateThumbnail <- Thumbnails
+      updateThumbnail <- Chips
                            .filterToSharedOrganizationIfNotInRoot(user)
                            .filter(_.id === thumbnailId)
     } yield (
@@ -165,13 +165,13 @@ object Thumbnails extends TableQuery(tag => new Thumbnails(tag)) with LazyLoggin
   }
 }
 
-class ThumbnailDefaultQuery[M, U, C[_]](thumbnails: Thumbnails.TableQuery) {
+class ThumbnailDefaultQuery[M, U, C[_]](thumbnails: Chips.TableQuery) {
 
-  def filterBySceneParams(sceneParams: ThumbnailQueryParameters): Thumbnails.TableQuery = {
+  def filterBySceneParams(sceneParams: ThumbnailQueryParameters): Chips.TableQuery = {
     thumbnails.filter(_.scene === sceneParams.sceneId)
   }
 
-  def page(pageRequest: PageRequest): Thumbnails.TableQuery = {
+  def page(pageRequest: PageRequest): Chips.TableQuery = {
     val sorted = thumbnails.sort(pageRequest.sort)
     sorted.drop(pageRequest.offset * pageRequest.limit).take(pageRequest.limit)
   }
