@@ -49,7 +49,6 @@ case class Chip(
   ingestSizeBytes: Int, // needed?
   tileFootprint: Option[Projected[Geometry]] = None,
   dataFootprint: Option[Projected[Geometry]] = None,
-  metadataFiles: List[String],
   ingestLocation: Option[String] = None,
   filterFields: SceneFilterFields = new SceneFilterFields(),
   statusFields: SceneStatusFields
@@ -64,7 +63,6 @@ case class Chip(
     this.ingestSizeBytes, // needed?
     this.tileFootprint,
     this.dataFootprint,
-    this.metadataFiles,
     images,
     thumbnails,
     this.ingestLocation,
@@ -82,7 +80,6 @@ object Scene {
     ingestSizeBytes: Int, // needed?
     tileFootprint: Option[Projected[Geometry]],
     dataFootprint: Option[Projected[Geometry]],
-    metadataFiles: List[String],
     images: List[Image.Banded],
     thumbnails: List[Thumbnail.Identified],
     ingestLocation: Option[String],
@@ -95,7 +92,6 @@ object Scene {
         ingestSizeBytes, // needed?
         tileFootprint,
         dataFootprint,
-        metadataFiles,
         ingestLocation,
         filterFields,
         statusFields
@@ -109,7 +105,6 @@ object Scene {
     ingestSizeBytes: Int, // needed?
     tileFootprint: Option[Projected[Geometry]],
     dataFootprint: Option[Projected[Geometry]],
-    metadataFiles: List[String],
     images: Seq[Image.WithRelated],
     thumbnails: Seq[Thumbnail],
     ingestLocation: Option[String],
@@ -122,7 +117,6 @@ object Scene {
         ingestSizeBytes, // needed?
         tileFootprint,
         dataFootprint,
-        metadataFiles,
         ingestLocation,
         filterFields,
         statusFields
