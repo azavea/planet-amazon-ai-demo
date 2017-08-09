@@ -16,23 +16,23 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 /** Table description of table chips. Objects of this class serve as prototypes for rows in queries. */
-class Chips(_tableTag: Tag) extends Table[Thumbnail](_tableTag, "chips")
+class Chips(_tableTag: Tag) extends Table[Chip](_tableTag, "chips")
                                          with OrganizationFkFields
                                          with TimestampFields
                                          with VisibilityField
 {
-  def * = (id, createdAt, modifiedAt, organizationId, widthPx, heightPx, scene, url, thumbnailSize) <> (Thumbnail.tupled, Thumbnail.unapply _)
+  def * = (id, createdAt, modifiedAt, organizationId, x, heightPx, scene, url, thumbnailSize) <> (Chip.tupled, Chip.unapply _)
 
   val id: Rep[java.util.UUID] = column[java.util.UUID]("id", O.PrimaryKey)
   val createdAt: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("created_at")
   val modifiedAt: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("modified_at")
   val organizationId: Rep[java.util.UUID] = column[java.util.UUID]("organization_id")
   val visibility: Rep[Visibility] = column[Visibility]("visibility")
-  val widthPx: Rep[Int] = column[Int]("width_px")
+  val x: Rep[Int] = column[Int]("width_px")
   val heightPx: Rep[Int] = column[Int]("height_px")
   val scene: Rep[java.util.UUID] = column[java.util.UUID]("scene")
   val url: Rep[String] = column[String]("url", O.Length(255,varying=true))
-  val thumbnailSize: Rep[ThumbnailSize] = column[ThumbnailSize]("thumbnail_size")
+  val thumbnailSize: Rep[ChipSize] = column[ChipSize]("thumbnail_size")
 
   /** Foreign key referencing Organizations (database name chips_organization_id_fkey) */
   lazy val organizationsFk = foreignKey("chips_organization_id_fkey", organizationId, Organizations)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
@@ -42,7 +42,7 @@ class Chips(_tableTag: Tag) extends Table[Thumbnail](_tableTag, "chips")
 
 /** Collection-like TableQuery object for table Chips */
 object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
-  type TableQuery = Query[Chips, Thumbnail, Seq]
+  type TableQuery = Query[Chips, Chip, Seq]
 
   implicit val projectsSorter: QuerySorter[Chips] =
     new QuerySorter(
@@ -50,14 +50,14 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
       new TimestampSort(identity[Chips]))
 
   implicit class withChipsQuery[M, U, C[_]](chips: Chips.TableQuery) extends
-      ThumbnailDefaultQuery[M, U, C](chips)
+      ChipDefaultQuery[M, U, C](chips)
 
   /** Insert a thumbnail into the database
     *
-    * @param thumbnail Thumbnail
+    * @param thumbnail Chip
     */
-  def insertThumbnail(thumbnail: Thumbnail)
-                     (implicit database: DB): Future[Thumbnail] = {
+  def insertChip(thumbnail: Chip)
+                     (implicit database: DB): Future[Chip] = {
 
     val action = Chips.forceInsert(thumbnail)
     logger.debug(s"Inserting thumbnail with: ${action.statements.headOption}")
@@ -71,8 +71,8 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
     * @param thumbnailId UUID ID Of thumbnail to query with
     * @param user        Results will be limited to user's organization
     */
-  def getThumbnail(thumbnailId: UUID, user: User)
-                  (implicit database: DB): Future[Option[Thumbnail]] = {
+  def getChip(thumbnailId: UUID, user: User)
+                  (implicit database: DB): Future[Option[Chip]] = {
 
     val action = Chips
                    .filterToSharedOrganizationIfNotInRoot(user)
@@ -84,8 +84,8 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
     }
   }
 
-  def listChips(pageRequest: PageRequest, queryParams: ThumbnailQueryParameters, user: User)
-                    (implicit database: DB): Future[PaginatedResponse[Thumbnail]] = {
+  def listChips(pageRequest: PageRequest, queryParams: ChipQueryParameters, user: User)
+                    (implicit database: DB): Future[PaginatedResponse[Chip]] = {
 
     val chips = Chips
                        .filterToSharedOrganizationIfNotInRoot(user)
@@ -105,7 +105,7 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
     } yield {
       val hasNext = (pageRequest.offset + 1) * pageRequest.limit < totalChips
       val hasPrevious = pageRequest.offset > 0
-      PaginatedResponse[Thumbnail](totalChips, hasPrevious, hasNext,
+      PaginatedResponse[Chip](totalChips, hasPrevious, hasNext,
         pageRequest.offset, pageRequest.limit, chips)
     }
   }
@@ -115,7 +115,7 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
     * @param thumbnailId UUID ID of scene to delete
     * @param user        Results will be limited to user's organization
     */
-  def deleteThumbnail(thumbnailId: UUID, user: User)
+  def deleteChip(thumbnailId: UUID, user: User)
                      (implicit database: DB): Future[Int] = {
 
     val action = Chips
@@ -137,25 +137,25 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
     * Allows updating the thumbnail from a user -- does not allow a user to update
     * createdBy or createdAt fields
     *
-    * @param thumbnail Thumbnail scene to use to update the database
+    * @param thumbnail Chip scene to use to update the database
     * @param thumbnailId UUID ID of scene to update
     */
-  def updateThumbnail(thumbnail: Thumbnail, thumbnailId: UUID, user: User)
+  def updateChip(thumbnail: Chip, thumbnailId: UUID, user: User)
                      (implicit database: DB): Future[Int] = {
 
     val updateTime = new Timestamp((new java.util.Date).getTime)
 
-    val updateThumbnailQuery = for {
-      updateThumbnail <- Chips
+    val updateChipQuery = for {
+      updateChip <- Chips
                            .filterToSharedOrganizationIfNotInRoot(user)
                            .filter(_.id === thumbnailId)
     } yield (
-      updateThumbnail.modifiedAt, updateThumbnail.widthPx, updateThumbnail.heightPx,
-      updateThumbnail.thumbnailSize, updateThumbnail.scene, updateThumbnail.url
+      updateChip.modifiedAt, updateChip.x, updateChip.heightPx,
+      updateChip.thumbnailSize, updateChip.scene, updateChip.url
     )
     database.db.run {
-      updateThumbnailQuery.update((
-        updateTime, thumbnail.widthPx, thumbnail.heightPx,
+      updateChipQuery.update((
+        updateTime, thumbnail.x, thumbnail.heightPx,
         thumbnail.thumbnailSize, thumbnail.sceneId, thumbnail.url
       )).map {
         case 1 => 1
@@ -165,9 +165,9 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
   }
 }
 
-class ThumbnailDefaultQuery[M, U, C[_]](chips: Chips.TableQuery) {
+class ChipDefaultQuery[M, U, C[_]](chips: Chips.TableQuery) {
 
-  def filterBySceneParams(sceneParams: ThumbnailQueryParameters): Chips.TableQuery = {
+  def filterBySceneParams(sceneParams: ChipQueryParameters): Chips.TableQuery = {
     chips.filter(_.scene === sceneParams.sceneId)
   }
 
