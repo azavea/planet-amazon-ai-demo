@@ -1,6 +1,5 @@
 package com.azavea.rf.datamodel
 
-import java.sql.Timestamp
 import java.util.UUID
 
 import com.azavea.rf.bridge._
