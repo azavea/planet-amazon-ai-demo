@@ -47,7 +47,6 @@ object SceneStatusFields {
 case class Chip(
   id: UUID,
   ingestSizeBytes: Int,
-  visibility: Visibility,
   tags: List[String],
   datasource: UUID,
   sceneMetadata: Json,
@@ -67,7 +66,6 @@ case class Chip(
   ): Scene.WithRelated = Scene.WithRelated(
     this.id,
     this.ingestSizeBytes,
-    this.visibility,
     this.tags,
     this.datasource,
     this.sceneMetadata,
@@ -90,7 +88,6 @@ object Scene {
   case class Create(
     id: Option[UUID],
     ingestSizeBytes: Int,
-    visibility: Visibility,
     tags: List[String],
     datasource: UUID,
     sceneMetadata: Json,
@@ -108,7 +105,6 @@ object Scene {
       Scene(
         id.getOrElse(UUID.randomUUID),
         ingestSizeBytes,
-        visibility,
         tags,
         datasource,
         sceneMetadata,
@@ -127,7 +123,6 @@ object Scene {
   case class WithRelated(
     id: UUID,
     ingestSizeBytes: Int,
-    visibility: Visibility,
     tags: List[String],
     datasource: UUID,
     sceneMetadata: Json,
@@ -145,7 +140,6 @@ object Scene {
       Scene(
         id,
         ingestSizeBytes,
-        visibility,
         tags,
         datasource,
         sceneMetadata,
