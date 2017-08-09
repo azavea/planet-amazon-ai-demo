@@ -161,8 +161,7 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
   def listChips(pageRequest: PageRequest, queryParams: ChipQueryParameters)
                     (implicit database: DB): Future[PaginatedResponse[Chip]] = {
 
-    val chips = Chips
-                       .filterBySceneParams(queryParams)
+    val chips = Chips.filterBySceneParams(queryParams)
 
     val paginatedChips = database.db.run {
       val action = chips.page(pageRequest).result
@@ -250,8 +249,11 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
 
 class ChipDefaultQuery[M, U, C[_]](chips: Chips.TableQuery) {
 
-  def filterBySceneParams(sceneParams: ChipQueryParameters): Chips.TableQuery = {
-    chips.filter(_.scene === sceneParams.sceneId)
+  def filterBySceneParams(chipParams: ChipQueryParameters): Chips.TableQuery = {
+    chips
+      .filter(_.x === chipParams.x)
+      .filter(_.y === chipParams.y)
+      .filter(_.scene === chipParams.sceneId)
   }
 
   def page(pageRequest: PageRequest): Chips.TableQuery = {
