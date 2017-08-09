@@ -47,7 +47,6 @@ object SceneStatusFields {
 case class Scene(
   id: UUID,
   createdBy: String,
-  modifiedAt: java.sql.Timestamp,
   modifiedBy: String,
   owner: String,
   organizationId: UUID,
@@ -72,7 +71,6 @@ case class Scene(
   ): Scene.WithRelated = Scene.WithRelated(
     this.id,
     this.createdBy,
-    this.modifiedAt,
     this.modifiedBy,
     this.owner,
     this.organizationId,
@@ -117,14 +115,11 @@ object Scene {
     statusFields: SceneStatusFields
   ) extends OwnerCheck {
     def toScene(user: User): Scene = {
-      val now = new Timestamp((new java.util.Date()).getTime())
-
       val ownerId = checkOwner(user, this.owner)
 
       Scene(
         id.getOrElse(UUID.randomUUID),
         user.id, // createdBy
-        now, // modifiedAt
         user.id, // modifiedBy
         ownerId, // owner
         organizationId,
@@ -148,7 +143,6 @@ object Scene {
   case class WithRelated(
     id: UUID,
     createdBy: String,
-    modifiedAt: Timestamp,
     modifiedBy: String,
     owner: String,
     organizationId: UUID,
@@ -171,7 +165,6 @@ object Scene {
       Scene(
         id,
         createdBy,
-        modifiedAt,
         modifiedBy,
         owner,
         organizationId,
