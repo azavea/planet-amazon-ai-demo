@@ -21,7 +21,7 @@ class Chips(_tableTag: Tag) extends Table[Chip](_tableTag, "chips")
                                          with TimestampFields
                                          with VisibilityField
 {
-  def * = (id, createdAt, modifiedAt, organizationId, x, y, scene, url, thumbnailSize) <> (Chip.tupled, Chip.unapply _)
+  def * = (id, createdAt, modifiedAt, organizationId, x, y, scene, url, labelProbabilities) <> (Chip.tupled, Chip.unapply _)
 
   val id: Rep[java.util.UUID] = column[java.util.UUID]("id", O.PrimaryKey)
   val createdAt: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("created_at")
@@ -32,7 +32,7 @@ class Chips(_tableTag: Tag) extends Table[Chip](_tableTag, "chips")
   val y: Rep[Int] = column[Int]("y")
   val scene: Rep[java.util.UUID] = column[java.util.UUID]("scene")
   val url: Rep[String] = column[String]("url", O.Length(255,varying=true))
-  val thumbnailSize: Rep[ChipSize] = column[ChipSize]("thumbnail_size")
+  val labelProbabilities: Rep[ChipSize] = column[ChipSize]("thumbnail_size")
 
   /** Foreign key referencing Organizations (database name chips_organization_id_fkey) */
   lazy val organizationsFk = foreignKey("chips_organization_id_fkey", organizationId, Organizations)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
@@ -151,12 +151,12 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
                            .filter(_.id === thumbnailId)
     } yield (
       updateChip.modifiedAt, updateChip.x, updateChip.y,
-      updateChip.thumbnailSize, updateChip.scene, updateChip.url
+      updateChip.labelProbabilities, updateChip.scene, updateChip.url
     )
     database.db.run {
       updateChipQuery.update((
         updateTime, thumbnail.x, thumbnail.y,
-        thumbnail.thumbnailSize, thumbnail.sceneId, thumbnail.url
+        thumbnail.labelProbabilities, thumbnail.sceneId, thumbnail.url
       )).map {
         case 1 => 1
         case c => throw new IllegalStateException(s"Error updating thumbnail: update result expected to be 1, was $c")
