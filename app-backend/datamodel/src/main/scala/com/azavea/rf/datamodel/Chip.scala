@@ -46,7 +46,6 @@ object SceneStatusFields {
 @JsonCodec
 case class Chip(
   id: UUID,
-  owner: String,
   organizationId: UUID,
   ingestSizeBytes: Int,
   visibility: Visibility,
@@ -68,7 +67,6 @@ case class Chip(
     thumbnails: Seq[Thumbnail]
   ): Scene.WithRelated = Scene.WithRelated(
     this.id,
-    this.owner,
     this.organizationId,
     this.ingestSizeBytes,
     this.visibility,
@@ -100,7 +98,6 @@ object Scene {
     datasource: UUID,
     sceneMetadata: Json,
     name: String,
-    owner: Option[String],
     tileFootprint: Option[Projected[Geometry]],
     dataFootprint: Option[Projected[Geometry]],
     metadataFiles: List[String],
@@ -109,13 +106,10 @@ object Scene {
     ingestLocation: Option[String],
     filterFields: SceneFilterFields = new SceneFilterFields(),
     statusFields: SceneStatusFields
-  ) extends OwnerCheck {
+  ) {
     def toScene(user: User): Scene = {
-      val ownerId = checkOwner(user, this.owner)
-
       Scene(
         id.getOrElse(UUID.randomUUID),
-        ownerId, // owner
         organizationId,
         ingestSizeBytes,
         visibility,
@@ -136,7 +130,6 @@ object Scene {
   @JsonCodec
   case class WithRelated(
     id: UUID,
-    owner: String,
     organizationId: UUID,
     ingestSizeBytes: Int,
     visibility: Visibility,
@@ -156,7 +149,6 @@ object Scene {
     def toScene: Scene =
       Scene(
         id,
-        owner,
         organizationId,
         ingestSizeBytes,
         visibility,
