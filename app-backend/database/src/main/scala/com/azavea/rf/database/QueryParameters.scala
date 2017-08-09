@@ -19,6 +19,8 @@ case class ThumbnailQueryParameters(
 /** Case class representing all /chip query parameters */
 @JsonCodec
 case class ChipQueryParameters(
+  x: Option[Int] = None,
+  y: Option[Int] = None,
   sceneId: Option[UUID] = None
 )
 

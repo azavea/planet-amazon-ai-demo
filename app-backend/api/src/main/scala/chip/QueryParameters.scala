@@ -14,6 +14,8 @@ import com.azavea.rf.api.utils.queryparams._
 trait ChipQueryParameterDirective extends QueryParametersCommon {
 
   val chipSpecificQueryParameters = parameters(
+    'x.as[Int].?,
+    'y.as[Int].?,
     'sceneId.as[UUID].?
   ).as(ChipQueryParameters.apply _)
 }
