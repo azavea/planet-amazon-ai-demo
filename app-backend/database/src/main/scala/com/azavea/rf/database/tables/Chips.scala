@@ -21,7 +21,7 @@ class Chips(_tableTag: Tag) extends Table[Chip](_tableTag, "chips")
                                          with TimestampFields
                                          with VisibilityField
 {
-  def * = (id, createdAt, modifiedAt, organizationId, x, heightPx, scene, url, thumbnailSize) <> (Chip.tupled, Chip.unapply _)
+  def * = (id, createdAt, modifiedAt, organizationId, x, y, scene, url, thumbnailSize) <> (Chip.tupled, Chip.unapply _)
 
   val id: Rep[java.util.UUID] = column[java.util.UUID]("id", O.PrimaryKey)
   val createdAt: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("created_at")
@@ -29,7 +29,7 @@ class Chips(_tableTag: Tag) extends Table[Chip](_tableTag, "chips")
   val organizationId: Rep[java.util.UUID] = column[java.util.UUID]("organization_id")
   val visibility: Rep[Visibility] = column[Visibility]("visibility")
   val x: Rep[Int] = column[Int]("x")
-  val heightPx: Rep[Int] = column[Int]("height_px")
+  val y: Rep[Int] = column[Int]("height_px")
   val scene: Rep[java.util.UUID] = column[java.util.UUID]("scene")
   val url: Rep[String] = column[String]("url", O.Length(255,varying=true))
   val thumbnailSize: Rep[ChipSize] = column[ChipSize]("thumbnail_size")
@@ -150,12 +150,12 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
                            .filterToSharedOrganizationIfNotInRoot(user)
                            .filter(_.id === thumbnailId)
     } yield (
-      updateChip.modifiedAt, updateChip.x, updateChip.heightPx,
+      updateChip.modifiedAt, updateChip.x, updateChip.y,
       updateChip.thumbnailSize, updateChip.scene, updateChip.url
     )
     database.db.run {
       updateChipQuery.update((
-        updateTime, thumbnail.x, thumbnail.heightPx,
+        updateTime, thumbnail.x, thumbnail.y,
         thumbnail.thumbnailSize, thumbnail.sceneId, thumbnail.url
       )).map {
         case 1 => 1
