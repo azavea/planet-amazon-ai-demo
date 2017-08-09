@@ -7,7 +7,7 @@ import io.circe._
 import io.circe.generic.JsonCodec
 
 @JsonCodec
-case class Thumbnail(
+case class Chip(
   id: UUID,
   createdAt: Timestamp,
   modifiedAt: Timestamp,
@@ -18,17 +18,17 @@ case class Thumbnail(
   url: String,
   thumbnailSize: ThumbnailSize
 ) {
-  def toThumbnail = this
+  def toChip = this
 }
 
-object Thumbnail {
-  def tupled = (Thumbnail.apply _).tupled
+object Chip {
+  def tupled = (Chip.apply _).tupled
 
   def create = Create.apply _
 
   def identified = Identified.apply _
 
-  /** Thumbnail class prior to ID assignment */
+  /** Chip class prior to ID assignment */
   @JsonCodec
   case class Create(
     organizationId: UUID,
@@ -38,9 +38,9 @@ object Thumbnail {
     sceneId: UUID,
     url: String
   ) {
-    def toThumbnail: Thumbnail = {
+    def toChip: Chip = {
       val now = new Timestamp((new java.util.Date).getTime)
-      Thumbnail(
+      Chip(
         UUID.randomUUID, // primary key
         now, // created at,
         now, // modified at,
@@ -54,7 +54,7 @@ object Thumbnail {
     }
   }
 
-  /** Thumbnail class when posted with an ID */
+  /** Chip class when posted with an ID */
   @JsonCodec
   case class Identified(
     id: Option[UUID],
@@ -65,9 +65,9 @@ object Thumbnail {
     sceneId: UUID,
     url: String
   ) {
-    def toThumbnail(userId: String): Thumbnail = {
+    def toChip(userId: String): Chip = {
       val now = new Timestamp((new java.util.Date()).getTime())
-      Thumbnail(
+      Chip(
         this.id.getOrElse(UUID.randomUUID), // primary key
         now, // createdAt
         now, // modifiedAt
