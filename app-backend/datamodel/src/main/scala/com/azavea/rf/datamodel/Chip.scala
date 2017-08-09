@@ -48,7 +48,6 @@ case class Chip(
   id: UUID,
   ingestSizeBytes: Int, // needed?
   datasource: UUID,
-  sceneMetadata: Json,
   tileFootprint: Option[Projected[Geometry]] = None,
   dataFootprint: Option[Projected[Geometry]] = None,
   metadataFiles: List[String],
@@ -65,7 +64,6 @@ case class Chip(
     this.id,
     this.ingestSizeBytes, // needed?
     this.datasource,
-    this.sceneMetadata,
     this.tileFootprint,
     this.dataFootprint,
     this.metadataFiles,
@@ -85,7 +83,6 @@ object Scene {
     id: Option[UUID],
     ingestSizeBytes: Int, // needed?
     datasource: UUID,
-    sceneMetadata: Json,
     tileFootprint: Option[Projected[Geometry]],
     dataFootprint: Option[Projected[Geometry]],
     metadataFiles: List[String],
@@ -100,7 +97,6 @@ object Scene {
         id.getOrElse(UUID.randomUUID),
         ingestSizeBytes, // needed?
         datasource,
-        sceneMetadata,
         tileFootprint,
         dataFootprint,
         metadataFiles,
@@ -116,7 +112,6 @@ object Scene {
     id: UUID,
     ingestSizeBytes: Int, // needed?
     datasource: UUID,
-    sceneMetadata: Json,
     tileFootprint: Option[Projected[Geometry]],
     dataFootprint: Option[Projected[Geometry]],
     metadataFiles: List[String],
@@ -131,7 +126,6 @@ object Scene {
         id,
         ingestSizeBytes, // needed?
         datasource,
-        sceneMetadata,
         tileFootprint,
         dataFootprint,
         metadataFiles,
