@@ -21,8 +21,6 @@ class Chips(_tableTag: Tag) extends Table[Chip](_tableTag, "chips")
                                          with TimestampFields
                                          with VisibilityField
 {
-  def * = (id, createdAt, modifiedAt, organizationId, x, y, scene, url, labelProbabilities) <> (Chip.tupled, Chip.unapply _)
-
   val id: Rep[java.util.UUID] = column[java.util.UUID]("id", O.PrimaryKey)
   val createdAt: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("created_at")
   val modifiedAt: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("modified_at")
@@ -32,12 +30,88 @@ class Chips(_tableTag: Tag) extends Table[Chip](_tableTag, "chips")
   val y: Rep[Int] = column[Int]("y")
   val scene: Rep[java.util.UUID] = column[java.util.UUID]("scene")
   val url: Rep[String] = column[String]("url", O.Length(255,varying=true))
-  val labelProbabilities: Rep[ChipLabelProbabilities] = column[ChipLabelProbabilities]("label_probabilities")
+  val agriculture: Rep[Float] = column[Float]("agriculture")
+  val artisinalMine: Rep[Float] = column[Float]("artisinal_mine")
+  val bareGround: Rep[Float] = column[Float]("bare_ground")
+  val blooming: Rep[Float] = column[Float]("blooming")
+  val blowDown: Rep[Float] = column[Float]("blow_down")
+  val clear: Rep[Float] = column[Float]("clear")
+  val cloudy: Rep[Float] = column[Float]("cloudy")
+  val conventionalMine: Rep[Float] = column[Float]("conventional_mine")
+  val cultivation: Rep[Float] = column[Float]("cultivation")
+  val habitation: Rep[Float] = column[Float]("habitation")
+  val haze: Rep[Float] = column[Float]("haze")
+  val partlyCloudy: Rep[Float] = column[Float]("partly_cloudy")
+  val primary: Rep[Float] = column[Float]("primary")
+  val road: Rep[Float] = column[Float]("road")
+  val selectiveLogging: Rep[Float] = column[Float]("selective_logging")
+  val slashBurn: Rep[Float] = column[Float]("slash_burn")
+  val water: Rep[Float] = column[Float]("water")
 
   /** Foreign key referencing Organizations (database name chips_organization_id_fkey) */
   lazy val organizationsFk = foreignKey("chips_organization_id_fkey", organizationId, Organizations)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
   /** Foreign key referencing Scenes (database name chips_scene_fkey) */
   lazy val scenesFk = foreignKey("chips_scene_fkey", scene, Scenes)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+
+  type ChipTupleType = (
+    UUID,
+    java.sql.Timestamp,
+    java.sql.Timestamp,
+    UUID,
+    Int,
+    Int,
+    UUID,
+    String,
+    ChipLabelProbabilities.TupleType
+  )
+
+  def toModel: ChipTupleType => Chip = { chipTuple =>
+    Chip(
+      chipTuple._1, // id
+      chipTuple._2, // createdAt
+      chipTuple._3, // modifiedAt
+      chipTuple._4, // organizationId
+      chipTuple._5, // x
+      chipTuple._6, // y
+      chipTuple._7, // sceneId
+      chipTuple._8, // url
+      ChipLabelProbabilities.tupled.apply(chipTuple._9) // labelProbabilities
+    )
+  }
+
+  @SuppressWarnings(Array("OptionGet"))
+  def toTuple: Chip => Option[ChipTupleType] = { chip =>
+    Some {
+      (
+        chip.id,
+        chip.createdAt,
+        chip.modifiedAt,
+        chip.organizationId,
+        chip.x,
+        chip.y,
+        chip.sceneId,
+        chip.url,
+        // scalastyle:off
+        ChipLabelProbabilities.unapply(chip.labelProbabilities).get
+        // scalastyle:on
+      )
+    }
+  }
+
+  val chipShapedValue = (
+    id,
+    createdAt,
+    modifiedAt,
+    organizationId,
+    x,
+    y,
+    scene,
+    url,
+    (agriculture, artisinalMine, bareGround, blooming, blowDown, clear, cloudy, conventionalMine, cultivation, habitation, haze, partlyCloudy, primary, road, selectiveLogging, slashBurn, water)
+  ).shaped[ChipTupleType]
+
+  def * = chipShapedValue <> (toModel, toTuple)
+
 }
 
 /** Collection-like TableQuery object for table Chips */
@@ -150,13 +224,23 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
                            .filterToSharedOrganizationIfNotInRoot(user)
                            .filter(_.id === chipId)
     } yield (
-      updateChip.modifiedAt, updateChip.x, updateChip.y,
-      updateChip.labelProbabilities, updateChip.scene, updateChip.url
+      updateChip.modifiedAt, updateChip.x, updateChip.y, updateChip.scene, updateChip.url,
+      updateChip.agriculture, updateChip.artisinalMine, updateChip.bareGround,
+      updateChip.blooming, updateChip.blowDown, updateChip.clear,
+      updateChip.cloudy, updateChip.conventionalMine, updateChip.cultivation,
+      updateChip.habitation, updateChip.haze, updateChip.partlyCloudy,
+      updateChip.primary, updateChip.road, updateChip.selectiveLogging,
+      updateChip.slashBurn, updateChip.water
     )
     database.db.run {
       updateChipQuery.update((
-        updateTime, chip.x, chip.y,
-        chip.labelProbabilities, chip.sceneId, chip.url
+        updateTime, chip.x, chip.y, chip.sceneId, chip.url,
+        chip.labelProbabilities.agriculture, chip.labelProbabilities.artisinalMine, chip.labelProbabilities.bareGround,
+        chip.labelProbabilities.blooming, chip.labelProbabilities.blowDown, chip.labelProbabilities.clear,
+        chip.labelProbabilities.cloudy, chip.labelProbabilities.conventionalMine, chip.labelProbabilities.cultivation,
+        chip.labelProbabilities.habitation, chip.labelProbabilities.haze, chip.labelProbabilities.partlyCloudy,
+        chip.labelProbabilities.primary, chip.labelProbabilities.road, chip.labelProbabilities.selectiveLogging,
+        chip.labelProbabilities.slashBurn, chip.labelProbabilities.water
       )).map {
         case 1 => 1
         case c => throw new IllegalStateException(s"Error updating chip: update result expected to be 1, was $c")
