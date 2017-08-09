@@ -7,6 +7,51 @@ import io.circe._
 import io.circe.generic.JsonCodec
 
 @JsonCodec
+case class PlanetAmazonKaggleLabelProbabilities(
+  agriculture: Float,
+  artisinalMine: Float,
+  bareGround: Float,
+  blooming: Float,
+  blowDown: Float,
+  clear: Float,
+  cloudy: Float,
+  conventionalMine: Float,
+  cultivation: Float,
+  habitation: Float,
+  haze: Float,
+  partlyCloudy: Float,
+  primary: Float,
+  road: Float,
+  selectiveLogging: Float,
+  slashBurn: Float,
+  water: Float
+)
+
+object PlanetAmazonKaggleLabelProbabilities {
+  def tupled = (PlanetAmazonKaggleLabelProbabilities.apply _).tupled
+
+  type TupleType = (
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float
+  )
+}
+
+@JsonCodec
 case class Chip(
   id: UUID,
   createdAt: Timestamp,
@@ -15,7 +60,8 @@ case class Chip(
   x: Int,
   y: Int,
   sceneId: UUID,
-  url: String
+  url: String,
+  labelProbabilities: PlanetAmazonKaggleLabelProbabilities
 ) {
   def toChip = this
 }
@@ -34,7 +80,8 @@ object Chip {
     x: Int,
     y: Int,
     sceneId: UUID,
-    url: String
+    url: String,
+    labelProbabilities: PlanetAmazonKaggleLabelProbabilities
   ) {
     def toChip: Chip = {
       val now = new Timestamp((new java.util.Date).getTime)
@@ -46,7 +93,8 @@ object Chip {
         x, // x in tile server
         y, // y in tile server
         sceneId,
-        url
+        url,
+        labelProbabilities
       )
     }
   }
@@ -59,7 +107,8 @@ object Chip {
     x: Int,
     y: Int,
     sceneId: UUID,
-    url: String
+    url: String,
+    labelProbabilities: PlanetAmazonKaggleLabelProbabilities
   ) {
     def toChip(userId: String): Chip = {
       val now = new Timestamp((new java.util.Date()).getTime())
@@ -71,7 +120,8 @@ object Chip {
         this.x,
         this.y,
         this.sceneId,
-        this.url
+        this.url,
+        this.labelProbabilities
       )
     }
   }
