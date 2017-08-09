@@ -12,7 +12,6 @@ import io.circe.generic.JsonCodec
 @JsonCodec
 case class SceneFilterFields(
   cloudCover: Option[Float] = None,
-  acquisitionDate: Option[java.sql.Timestamp] = None,
   sunAzimuth: Option[Float] = None,
   sunElevation: Option[Float] = None
 )
@@ -22,7 +21,6 @@ object SceneFilterFields {
 
   type TupleType = (
     Option[Float],
-    Option[java.sql.Timestamp],
     Option[Float],
     Option[Float]
   )
