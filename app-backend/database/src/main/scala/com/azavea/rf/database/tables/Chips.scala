@@ -15,8 +15,8 @@ import com.lonelyplanet.akka.http.extensions.PageRequest
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-/** Table description of table thumbnails. Objects of this class serve as prototypes for rows in queries. */
-class Chips(_tableTag: Tag) extends Table[Thumbnail](_tableTag, "thumbnails")
+/** Table description of table chips. Objects of this class serve as prototypes for rows in queries. */
+class Chips(_tableTag: Tag) extends Table[Thumbnail](_tableTag, "chips")
                                          with OrganizationFkFields
                                          with TimestampFields
                                          with VisibilityField
@@ -34,10 +34,10 @@ class Chips(_tableTag: Tag) extends Table[Thumbnail](_tableTag, "thumbnails")
   val url: Rep[String] = column[String]("url", O.Length(255,varying=true))
   val thumbnailSize: Rep[ThumbnailSize] = column[ThumbnailSize]("thumbnail_size")
 
-  /** Foreign key referencing Organizations (database name thumbnails_organization_id_fkey) */
-  lazy val organizationsFk = foreignKey("thumbnails_organization_id_fkey", organizationId, Organizations)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-  /** Foreign key referencing Scenes (database name thumbnails_scene_fkey) */
-  lazy val scenesFk = foreignKey("thumbnails_scene_fkey", scene, Scenes)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+  /** Foreign key referencing Organizations (database name chips_organization_id_fkey) */
+  lazy val organizationsFk = foreignKey("chips_organization_id_fkey", organizationId, Organizations)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+  /** Foreign key referencing Scenes (database name chips_scene_fkey) */
+  lazy val scenesFk = foreignKey("chips_scene_fkey", scene, Scenes)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
 }
 
 /** Collection-like TableQuery object for table Chips */
@@ -49,8 +49,8 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
       new OrganizationFkSort(identity[Chips]),
       new TimestampSort(identity[Chips]))
 
-  implicit class withChipsQuery[M, U, C[_]](thumbnails: Chips.TableQuery) extends
-      ThumbnailDefaultQuery[M, U, C](thumbnails)
+  implicit class withChipsQuery[M, U, C[_]](chips: Chips.TableQuery) extends
+      ThumbnailDefaultQuery[M, U, C](chips)
 
   /** Insert a thumbnail into the database
     *
@@ -87,26 +87,26 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
   def listChips(pageRequest: PageRequest, queryParams: ThumbnailQueryParameters, user: User)
                     (implicit database: DB): Future[PaginatedResponse[Thumbnail]] = {
 
-    val thumbnails = Chips
+    val chips = Chips
                        .filterToSharedOrganizationIfNotInRoot(user)
                        .filterBySceneParams(queryParams)
 
     val paginatedChips = database.db.run {
-      val action = thumbnails.page(pageRequest).result
-      logger.debug(s"Query for thumbnails -- SQL ${action.statements.headOption}")
+      val action = chips.page(pageRequest).result
+      logger.debug(s"Query for chips -- SQL ${action.statements.headOption}")
       action
     }
 
-    val totalChipsQuery = database.db.run { thumbnails.length.result }
+    val totalChipsQuery = database.db.run { chips.length.result }
 
     for {
       totalChips <- totalChipsQuery
-      thumbnails <- paginatedChips
+      chips <- paginatedChips
     } yield {
       val hasNext = (pageRequest.offset + 1) * pageRequest.limit < totalChips
       val hasPrevious = pageRequest.offset > 0
       PaginatedResponse[Thumbnail](totalChips, hasPrevious, hasNext,
-        pageRequest.offset, pageRequest.limit, thumbnails)
+        pageRequest.offset, pageRequest.limit, chips)
     }
   }
 
@@ -165,14 +165,14 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
   }
 }
 
-class ThumbnailDefaultQuery[M, U, C[_]](thumbnails: Chips.TableQuery) {
+class ThumbnailDefaultQuery[M, U, C[_]](chips: Chips.TableQuery) {
 
   def filterBySceneParams(sceneParams: ThumbnailQueryParameters): Chips.TableQuery = {
-    thumbnails.filter(_.scene === sceneParams.sceneId)
+    chips.filter(_.scene === sceneParams.sceneId)
   }
 
   def page(pageRequest: PageRequest): Chips.TableQuery = {
-    val sorted = thumbnails.sort(pageRequest.sort)
+    val sorted = chips.sort(pageRequest.sort)
     sorted.drop(pageRequest.offset * pageRequest.limit).take(pageRequest.limit)
   }
 }
