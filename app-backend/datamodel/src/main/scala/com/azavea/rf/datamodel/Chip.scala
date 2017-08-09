@@ -10,19 +10,47 @@ import io.circe._
 import io.circe.generic.JsonCodec
 
 @JsonCodec
-case class SceneFilterFields(
-  cloudCover: Option[Float] = None,
-  sunAzimuth: Option[Float] = None,
-  sunElevation: Option[Float] = None
+case class ChipFilterFields(
+  agriculture: Float,
+  artisinalMine: Float,
+  bareGround: Float,
+  blooming: Float,
+  blowDown: Float,
+  clear: Float,
+  cloudy: Float,
+  conventionalMine: Float,
+  cultivation: Float,
+  habitation: Float,
+  haze: Float,
+  partlyCloudy: Float,
+  primary: Float,
+  road: Float,
+  selectiveLogging: Float,
+  slashBurn: Float,
+  water: Float
 )
 
-object SceneFilterFields {
-  def tupled = (SceneFilterFields.apply _).tupled
+object ChipFilterFields {
+  def tupled = (ChipFilterFields.apply _).tupled
 
   type TupleType = (
-    Option[Float],
-    Option[Float],
-    Option[Float]
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float,
+    Float
   )
 }
 
@@ -50,7 +78,7 @@ case class Chip(
   tileFootprint: Option[Projected[Geometry]] = None,
   dataFootprint: Option[Projected[Geometry]] = None,
   ingestLocation: Option[String] = None,
-  filterFields: SceneFilterFields = new SceneFilterFields(),
+  filterFields: ChipFilterFields,
   statusFields: SceneStatusFields
 ) {
   def toScene = this
@@ -80,7 +108,7 @@ object Scene {
     dataFootprint: Option[Projected[Geometry]],
     thumbnails: List[Thumbnail.Identified],
     ingestLocation: Option[String],
-    filterFields: SceneFilterFields = new SceneFilterFields(),
+    filterFields: ChipFilterFields,
     statusFields: SceneStatusFields
   ) {
     def toScene(user: User): Scene = {
@@ -104,7 +132,7 @@ object Scene {
     dataFootprint: Option[Projected[Geometry]],
     thumbnails: Seq[Thumbnail],
     ingestLocation: Option[String],
-    filterFields: SceneFilterFields = new SceneFilterFields(),
+    filterFields: ChipFilterFields,
     statusFields: SceneStatusFields
   ) {
     def toScene: Scene =
