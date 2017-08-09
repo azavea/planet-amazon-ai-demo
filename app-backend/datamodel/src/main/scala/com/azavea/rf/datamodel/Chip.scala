@@ -47,7 +47,6 @@ object SceneStatusFields {
 case class Chip(
   id: UUID,
   ingestSizeBytes: Int, // needed?
-  datasource: UUID,
   tileFootprint: Option[Projected[Geometry]] = None,
   dataFootprint: Option[Projected[Geometry]] = None,
   metadataFiles: List[String],
@@ -63,7 +62,6 @@ case class Chip(
   ): Scene.WithRelated = Scene.WithRelated(
     this.id,
     this.ingestSizeBytes, // needed?
-    this.datasource,
     this.tileFootprint,
     this.dataFootprint,
     this.metadataFiles,
@@ -82,7 +80,6 @@ object Scene {
   case class Create(
     id: Option[UUID],
     ingestSizeBytes: Int, // needed?
-    datasource: UUID,
     tileFootprint: Option[Projected[Geometry]],
     dataFootprint: Option[Projected[Geometry]],
     metadataFiles: List[String],
@@ -96,7 +93,6 @@ object Scene {
       Scene(
         id.getOrElse(UUID.randomUUID),
         ingestSizeBytes, // needed?
-        datasource,
         tileFootprint,
         dataFootprint,
         metadataFiles,
@@ -111,7 +107,6 @@ object Scene {
   case class WithRelated(
     id: UUID,
     ingestSizeBytes: Int, // needed?
-    datasource: UUID,
     tileFootprint: Option[Projected[Geometry]],
     dataFootprint: Option[Projected[Geometry]],
     metadataFiles: List[String],
@@ -125,7 +120,6 @@ object Scene {
       Scene(
         id,
         ingestSizeBytes, // needed?
-        datasource,
         tileFootprint,
         dataFootprint,
         metadataFiles,
