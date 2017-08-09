@@ -158,11 +158,10 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
     }
   }
 
-  def listChips(pageRequest: PageRequest, queryParams: ChipQueryParameters, user: User)
+  def listChips(pageRequest: PageRequest, queryParams: ChipQueryParameters)
                     (implicit database: DB): Future[PaginatedResponse[Chip]] = {
 
     val chips = Chips
-                       .filterToSharedOrganizationIfNotInRoot(user)
                        .filterBySceneParams(queryParams)
 
     val paginatedChips = database.db.run {

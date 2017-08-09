@@ -58,10 +58,10 @@ trait ChipRoutes extends Authentication
     }
   }
 
-  def listChips: Route = authenticate { user =>
+  def listChips: Route = {
     (withPagination & chipSpecificQueryParameters) { (page, chipParams) =>
       complete {
-        Chips.listChips(page, chipParams, user)
+        Chips.listChips(page, chipParams)
       }
     }
   }
