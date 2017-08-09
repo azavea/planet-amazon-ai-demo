@@ -43,8 +43,8 @@ object Chip {
         now, // created at,
         now, // modified at,
         organizationId,
-        x, // width in pixels
-        y, // height in pixels
+        x, // x in tile server
+        y, // y in tile server
         sceneId,
         url
       )
