@@ -44,7 +44,7 @@ object SceneStatusFields {
 }
 
 @JsonCodec
-case class Scene(
+case class Chip(
   id: UUID,
   createdBy: String,
   modifiedBy: String,
