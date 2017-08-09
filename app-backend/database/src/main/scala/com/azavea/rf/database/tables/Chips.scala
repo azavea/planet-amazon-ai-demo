@@ -52,33 +52,33 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
   implicit class withChipsQuery[M, U, C[_]](chips: Chips.TableQuery) extends
       ChipDefaultQuery[M, U, C](chips)
 
-  /** Insert a thumbnail into the database
+  /** Insert a chip into the database
     *
-    * @param thumbnail Chip
+    * @param chip Chip
     */
-  def insertChip(thumbnail: Chip)
+  def insertChip(chip: Chip)
                      (implicit database: DB): Future[Chip] = {
 
-    val action = Chips.forceInsert(thumbnail)
-    logger.debug(s"Inserting thumbnail with: ${action.statements.headOption}")
+    val action = Chips.forceInsert(chip)
+    logger.debug(s"Inserting chip with: ${action.statements.headOption}")
     database.db.run {
-      action.map( _ => thumbnail)
+      action.map( _ => chip)
     }
   }
 
-  /** Retrieve a single thumbnail from the database
+  /** Retrieve a single chip from the database
     *
-    * @param thumbnailId UUID ID Of thumbnail to query with
+    * @param chipId UUID ID Of chip to query with
     * @param user        Results will be limited to user's organization
     */
-  def getChip(thumbnailId: UUID, user: User)
+  def getChip(chipId: UUID, user: User)
                   (implicit database: DB): Future[Option[Chip]] = {
 
     val action = Chips
                    .filterToSharedOrganizationIfNotInRoot(user)
-                   .filter(_.id === thumbnailId)
+                   .filter(_.id === chipId)
                    .result
-    logger.debug(s"Retrieving thumbnail with: ${action.statements.headOption}")
+    logger.debug(s"Retrieving chip with: ${action.statements.headOption}")
     database.db.run {
       action.headOption
     }
@@ -112,35 +112,35 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
 
   /** Delete a scene from the database
     *
-    * @param thumbnailId UUID ID of scene to delete
+    * @param chipId UUID ID of scene to delete
     * @param user        Results will be limited to user's organization
     */
-  def deleteChip(thumbnailId: UUID, user: User)
+  def deleteChip(chipId: UUID, user: User)
                      (implicit database: DB): Future[Int] = {
 
     val action = Chips
                    .filterToSharedOrganizationIfNotInRoot(user)
-                   .filter(_.id === thumbnailId)
+                   .filter(_.id === chipId)
                    .delete
-    logger.debug(s"Deleting thumbnail with: ${action.statements.headOption}")
+    logger.debug(s"Deleting chip with: ${action.statements.headOption}")
     database.db.run {
       action.map {
         case 1 => 1
         case 0 => 0
-        case c => throw new IllegalStateException(s"Error deleting thumbnail: update result expected to be 1, was $c")
+        case c => throw new IllegalStateException(s"Error deleting chip: update result expected to be 1, was $c")
       }
     }
   }
 
-  /** Update a thumbnail in the database
+  /** Update a chip in the database
     *
-    * Allows updating the thumbnail from a user -- does not allow a user to update
+    * Allows updating the chip from a user -- does not allow a user to update
     * createdBy or createdAt fields
     *
-    * @param thumbnail Chip scene to use to update the database
-    * @param thumbnailId UUID ID of scene to update
+    * @param chip Chip scene to use to update the database
+    * @param chipId UUID ID of scene to update
     */
-  def updateChip(thumbnail: Chip, thumbnailId: UUID, user: User)
+  def updateChip(chip: Chip, chipId: UUID, user: User)
                      (implicit database: DB): Future[Int] = {
 
     val updateTime = new Timestamp((new java.util.Date).getTime)
@@ -148,18 +148,18 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
     val updateChipQuery = for {
       updateChip <- Chips
                            .filterToSharedOrganizationIfNotInRoot(user)
-                           .filter(_.id === thumbnailId)
+                           .filter(_.id === chipId)
     } yield (
       updateChip.modifiedAt, updateChip.x, updateChip.y,
       updateChip.labelProbabilities, updateChip.scene, updateChip.url
     )
     database.db.run {
       updateChipQuery.update((
-        updateTime, thumbnail.x, thumbnail.y,
-        thumbnail.labelProbabilities, thumbnail.sceneId, thumbnail.url
+        updateTime, chip.x, chip.y,
+        chip.labelProbabilities, chip.sceneId, chip.url
       )).map {
         case 1 => 1
-        case c => throw new IllegalStateException(s"Error updating thumbnail: update result expected to be 1, was $c")
+        case c => throw new IllegalStateException(s"Error updating chip: update result expected to be 1, was $c")
       }
     }
   }
