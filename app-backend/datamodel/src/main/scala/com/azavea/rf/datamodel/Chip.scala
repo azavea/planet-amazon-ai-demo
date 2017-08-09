@@ -1,179 +1,83 @@
 package com.azavea.rf.datamodel
 
 import java.util.UUID
-
-import com.azavea.rf.bridge._
-import geotrellis.vector.Geometry
-import geotrellis.slick.Projected
+import java.sql.Timestamp
 
 import io.circe._
 import io.circe.generic.JsonCodec
 
 @JsonCodec
-case class ChipFilterFields(
-  agriculture: Float,
-  artisinalMine: Float,
-  bareGround: Float,
-  blooming: Float,
-  blowDown: Float,
-  clear: Float,
-  cloudy: Float,
-  conventionalMine: Float,
-  cultivation: Float,
-  habitation: Float,
-  haze: Float,
-  partlyCloudy: Float,
-  primary: Float,
-  road: Float,
-  selectiveLogging: Float,
-  slashBurn: Float,
-  water: Float
-)
-
-object ChipFilterFields {
-  def tupled = (ChipFilterFields.apply _).tupled
-
-  type TupleType = (
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float
-  )
-}
-
-@JsonCodec
-case class SceneStatusFields(
-  thumbnailStatus: JobStatus,
-  boundaryStatus: JobStatus,
-  ingestStatus: IngestStatus
-)
-
-object SceneStatusFields {
-  def tupled = (SceneStatusFields.apply _).tupled
-
-  type TupleType = (
-    JobStatus,
-    JobStatus,
-    IngestStatus
-  )
-}
-
-@JsonCodec
-case class Chip(
+case class Thumbnail(
   id: UUID,
-  ingestSizeBytes: Int, // needed?
-  tileFootprint: Option[Projected[Geometry]] = None,
-  dataFootprint: Option[Projected[Geometry]] = None,
-  ingestLocation: Option[String] = None,
-  filterFields: ChipFilterFields,
-  statusFields: SceneStatusFields
+  createdAt: Timestamp,
+  modifiedAt: Timestamp,
+  organizationId: UUID,
+  widthPx: Int,
+  heightPx: Int,
+  sceneId: UUID,
+  url: String,
+  thumbnailSize: ThumbnailSize
 ) {
-  def toScene = this
-
-  def withRelatedFromComponents(
-    thumbnails: Seq[Thumbnail]
-  ): Scene.WithRelated = Scene.WithRelated(
-    this.id,
-    this.ingestSizeBytes, // needed?
-    this.tileFootprint,
-    this.dataFootprint,
-    thumbnails,
-    this.ingestLocation,
-    this.filterFields,
-    this.statusFields
-  )
+  def toThumbnail = this
 }
 
+object Thumbnail {
+  def tupled = (Thumbnail.apply _).tupled
 
-object Scene {
-  /** Case class extracted from a POST request */
+  def create = Create.apply _
+
+  def identified = Identified.apply _
+
+  /** Thumbnail class prior to ID assignment */
   @JsonCodec
   case class Create(
-    id: Option[UUID],
-    ingestSizeBytes: Int, // needed?
-    tileFootprint: Option[Projected[Geometry]],
-    dataFootprint: Option[Projected[Geometry]],
-    thumbnails: List[Thumbnail.Identified],
-    ingestLocation: Option[String],
-    filterFields: ChipFilterFields,
-    statusFields: SceneStatusFields
+    organizationId: UUID,
+    thumbnailSize: ThumbnailSize,
+    widthPx: Int,
+    heightPx: Int,
+    sceneId: UUID,
+    url: String
   ) {
-    def toScene(user: User): Scene = {
-      Scene(
-        id.getOrElse(UUID.randomUUID),
-        ingestSizeBytes, // needed?
-        tileFootprint,
-        dataFootprint,
-        ingestLocation,
-        filterFields,
-        statusFields
+    def toThumbnail: Thumbnail = {
+      val now = new Timestamp((new java.util.Date).getTime)
+      Thumbnail(
+        UUID.randomUUID, // primary key
+        now, // created at,
+        now, // modified at,
+        organizationId,
+        widthPx, // width in pixels
+        heightPx, // height in pixels
+        sceneId,
+        url,
+        thumbnailSize
       )
     }
   }
 
+  /** Thumbnail class when posted with an ID */
   @JsonCodec
-  case class WithRelated(
-    id: UUID,
-    ingestSizeBytes: Int, // needed?
-    tileFootprint: Option[Projected[Geometry]],
-    dataFootprint: Option[Projected[Geometry]],
-    thumbnails: Seq[Thumbnail],
-    ingestLocation: Option[String],
-    filterFields: ChipFilterFields,
-    statusFields: SceneStatusFields
+  case class Identified(
+    id: Option[UUID],
+    organizationId: UUID,
+    thumbnailSize: ThumbnailSize,
+    widthPx: Int,
+    heightPx: Int,
+    sceneId: UUID,
+    url: String
   ) {
-    def toScene: Scene =
-      Scene(
-        id,
-        ingestSizeBytes, // needed?
-        tileFootprint,
-        dataFootprint,
-        ingestLocation,
-        filterFields,
-        statusFields
+    def toThumbnail(userId: String): Thumbnail = {
+      val now = new Timestamp((new java.util.Date()).getTime())
+      Thumbnail(
+        this.id.getOrElse(UUID.randomUUID), // primary key
+        now, // createdAt
+        now, // modifiedAt
+        this.organizationId,
+        this.widthPx,
+        this.heightPx,
+        this.sceneId,
+        this.url,
+        this.thumbnailSize
       )
-    }
-
-  object WithRelated {
-    /** Helper function to create Iterable[Scene.WithRelated] from join
-      *
-      * It is necessary to map over the distinct scenes because that is the only way to
-      * ensure that the sort order of the query result remains ordered after grouping
-      *
-      * @param records result of join query to return scene with related
-      * information
-      */
-    @SuppressWarnings(Array("TraversableHead"))
-    def fromRecords(records: Seq[(Scene, Option[Thumbnail])])
-      : Iterable[Scene.WithRelated] = {
-      val distinctScenes = records.map(_._1.id).distinct
-      val groupedScenes = records.map(_._1).groupBy(_.id)
-      val groupedRecords = records.groupBy(_._1.id)
-
-      distinctScenes.map { scene =>
-        val (seqThumbnails) = groupedRecords(scene).map {
-          case (_, thumbnail) => (thumbnail)
-        }.unzip
-        groupedScenes.get(scene) match {
-          case Some(scene) => scene.head.withRelatedFromComponents(
-            seqThumbnails.flatten.distinct
-          )
-          case _ => throw new Exception("This is impossible")
-        }
-      }
     }
   }
 }
