@@ -15,8 +15,7 @@ case class Chip(
   x: Int,
   y: Int,
   sceneId: UUID,
-  url: String,
-  thumbnailSize: ThumbnailSize
+  url: String
 ) {
   def toChip = this
 }
@@ -32,7 +31,6 @@ object Chip {
   @JsonCodec
   case class Create(
     organizationId: UUID,
-    thumbnailSize: ThumbnailSize,
     x: Int,
     y: Int,
     sceneId: UUID,
@@ -48,8 +46,7 @@ object Chip {
         x, // width in pixels
         y, // height in pixels
         sceneId,
-        url,
-        thumbnailSize
+        url
       )
     }
   }
@@ -59,7 +56,6 @@ object Chip {
   case class Identified(
     id: Option[UUID],
     organizationId: UUID,
-    thumbnailSize: ThumbnailSize,
     x: Int,
     y: Int,
     sceneId: UUID,
@@ -75,8 +71,7 @@ object Chip {
         this.x,
         this.y,
         this.sceneId,
-        this.url,
-        this.thumbnailSize
+        this.url
       )
     }
   }
