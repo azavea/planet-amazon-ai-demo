@@ -25,7 +25,7 @@ class Chips(_tableTag: Tag) extends Table[Chip](_tableTag, "chips")
                                          with TimestampFields
                                          with VisibilityField
 {
-  def * = (id, createdAt, modifiedAt, organizationId, x, y, scene, url, labelProbabilities) <> (Chip.tupled, Chip.unapply _)
+  def * = (id, createdAt, modifiedAt, organizationId, x, y, z, scene, url, labelProbabilities) <> (Chip.tupled, Chip.unapply _)
 
   val id: Rep[java.util.UUID] = column[java.util.UUID]("id", O.PrimaryKey)
   val createdAt: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("created_at")
@@ -34,6 +34,7 @@ class Chips(_tableTag: Tag) extends Table[Chip](_tableTag, "chips")
   val visibility: Rep[Visibility] = column[Visibility]("visibility")
   val x: Rep[Int] = column[Int]("x")
   val y: Rep[Int] = column[Int]("y")
+  val z: Rep[Int] = column[Int]("z")
   val scene: Rep[java.util.UUID] = column[java.util.UUID]("scene")
   val url: Rep[String] = column[String]("url", O.Length(255,varying=true))
   val labelProbabilities: Rep[Json] = column[Json]("label_probabilities")
@@ -152,12 +153,12 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
                            .filterToSharedOrganizationIfNotInRoot(user)
                            .filter(_.id === chipId)
     } yield (
-      updateChip.modifiedAt, updateChip.x, updateChip.y,
+      updateChip.modifiedAt, updateChip.x, updateChip.y, updateChip.z,
       updateChip.scene, updateChip.url, updateChip.labelProbabilities
     )
     database.db.run {
       updateChipQuery.update((
-        updateTime, chip.x, chip.y,
+        updateTime, chip.x, chip.y, chip.z,
         chip.sceneId, chip.url, chip.labelProbabilities
       )).map {
         case 1 => 1
@@ -173,6 +174,7 @@ class ChipDefaultQuery[M, U, C[_]](chips: Chips.TableQuery) {
     chips
       .filter(_.x === chipParams.x)
       .filter(_.y === chipParams.y)
+      .filter(_.z === chipParams.z)
       .filter(_.scene === chipParams.sceneId)
       .filter { chip =>
         chip.labelProbabilities.asInstanceOf[Json].as[Map[String, Float]] match {

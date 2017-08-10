@@ -21,6 +21,7 @@ case class ThumbnailQueryParameters(
 case class ChipQueryParameters(
   x: Option[Int] = None,
   y: Option[Int] = None,
+  z: Option[Int] = None,
   sceneId: Option[UUID] = None,
   labels: Option[String] = None
 )

@@ -14,6 +14,7 @@ case class Chip(
   organizationId: UUID,
   x: Int,
   y: Int,
+  z: Int,
   sceneId: UUID,
   url: String,
   labelProbabilities: Json
@@ -34,6 +35,7 @@ object Chip {
     organizationId: UUID,
     x: Int,
     y: Int,
+    z: Int,
     sceneId: UUID,
     url: String,
     labelProbabilities: Json
@@ -47,6 +49,7 @@ object Chip {
         organizationId,
         x, // x in tile server
         y, // y in tile server
+        z, // z in tile server
         sceneId,
         url,
         labelProbabilities
@@ -61,6 +64,7 @@ object Chip {
     organizationId: UUID,
     x: Int,
     y: Int,
+    z: Int,
     sceneId: UUID,
     url: String,
     labelProbabilities: Json
@@ -74,6 +78,7 @@ object Chip {
         this.organizationId,
         this.x,
         this.y,
+        this.z,
         this.sceneId,
         this.url,
         this.labelProbabilities
