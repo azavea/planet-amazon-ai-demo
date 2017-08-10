@@ -7,51 +7,6 @@ import io.circe._
 import io.circe.generic.JsonCodec
 
 @JsonCodec
-case class ChipLabelProbabilities(
-  agriculture: Float,
-  artisinalMine: Float,
-  bareGround: Float,
-  blooming: Float,
-  blowDown: Float,
-  clear: Float,
-  cloudy: Float,
-  conventionalMine: Float,
-  cultivation: Float,
-  habitation: Float,
-  haze: Float,
-  partlyCloudy: Float,
-  primary: Float,
-  road: Float,
-  selectiveLogging: Float,
-  slashBurn: Float,
-  water: Float
-)
-
-object ChipLabelProbabilities {
-  def tupled = (ChipLabelProbabilities.apply _).tupled
-
-  type TupleType = (
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float,
-    Float
-  )
-}
-
-@JsonCodec
 case class Chip(
   id: UUID,
   createdAt: Timestamp,
@@ -61,7 +16,7 @@ case class Chip(
   y: Int,
   sceneId: UUID,
   url: String,
-  labelProbabilities: ChipLabelProbabilities
+  labelProbabilities: Json
 ) {
   def toChip = this
 }
@@ -81,7 +36,7 @@ object Chip {
     y: Int,
     sceneId: UUID,
     url: String,
-    labelProbabilities: ChipLabelProbabilities
+    labelProbabilities: Json
   ) {
     def toChip: Chip = {
       val now = new Timestamp((new java.util.Date).getTime)
@@ -108,7 +63,7 @@ object Chip {
     y: Int,
     sceneId: UUID,
     url: String,
-    labelProbabilities: ChipLabelProbabilities
+    labelProbabilities: Json
   ) {
     def toChip(userId: String): Chip = {
       val now = new Timestamp((new java.util.Date()).getTime())
