@@ -17,6 +17,6 @@ trait ChipQueryParameterDirective extends QueryParametersCommon {
     'x.as[Int].?,
     'y.as[Int].?,
     'sceneId.as[UUID].?,
-    'filters.as[String].?
+    'labels.as[String].?
   ).as(ChipQueryParameters.apply _)
 }
