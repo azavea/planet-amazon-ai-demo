@@ -15,6 +15,10 @@ import com.lonelyplanet.akka.http.extensions.PageRequest
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
+import io.circe._
+import io.circe.parser._
+import cats.syntax.either._
+
 /** Table description of table chips. Objects of this class serve as prototypes for rows in queries. */
 class Chips(_tableTag: Tag) extends Table[Chip](_tableTag, "chips")
                                          with OrganizationFkFields
@@ -87,7 +91,7 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
   def listChips(pageRequest: PageRequest, queryParams: ChipQueryParameters)
                     (implicit database: DB): Future[PaginatedResponse[Chip]] = {
 
-    val chips = Chips.filterBySceneParams(queryParams)
+    val chips = Chips.filterByChipParams(queryParams)
 
     val paginatedChips = database.db.run {
       val action = chips.page(pageRequest).result
@@ -165,11 +169,31 @@ object Chips extends TableQuery(tag => new Chips(tag)) with LazyLogging {
 
 class ChipDefaultQuery[M, U, C[_]](chips: Chips.TableQuery) {
 
-  def filterBySceneParams(chipParams: ChipQueryParameters): Chips.TableQuery = {
+  def filterByChipParams(chipParams: ChipQueryParameters): Chips.TableQuery = {
     chips
       .filter(_.x === chipParams.x)
       .filter(_.y === chipParams.y)
       .filter(_.scene === chipParams.sceneId)
+      .filter { chip =>
+        val labelProbabilities: Json = chip.labelProbabilities.asInstanceOf[Json]
+        labelProbabilities.as[Map[String, Float]] match {
+          case Left(decodingFailure) => true.asInstanceOf[Rep[Boolean]]
+          case Right(labelProbabilitiesMap) => {
+            decode[List[String]](chipParams.filters.get) match {
+              case Left(error) => true.asInstanceOf[Rep[Boolean]]
+              case Right(filters) => {
+                filters.map { label =>
+                  val labelProbability: Float = labelProbabilitiesMap.getOrElse(label, 0f)
+                  val labelThreshold: Float = 0.2f
+                  (labelProbability >= labelThreshold).asInstanceOf[Rep[Boolean]]
+                }
+                .reduceLeftOption(_ || _)
+                .getOrElse(true: Rep[Boolean])
+              }
+            }
+          }
+        }
+      }
   }
 
   def page(pageRequest: PageRequest): Chips.TableQuery = {
