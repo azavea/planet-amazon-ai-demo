@@ -206,6 +206,7 @@ case class ImportLandsat8C1(startDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
             metadataFiles = List(s"${landsat8Config.awsLandsatBaseC1}${landsatPath}/${productId}_MTL.txt"),
             images = images,
             thumbnails = createThumbnails(sceneId, productId),
+            chips = List[Chip.Identified](),
             ingestLocation = None,
             filterFields = SceneFilterFields(
               cloudCover = cloudCover,
@@ -215,6 +216,7 @@ case class ImportLandsat8C1(startDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
             ),
             statusFields = SceneStatusFields(
               thumbnailStatus = JobStatus.Success,
+              chipStatus = JobStatus.Success,
               boundaryStatus = JobStatus.Success,
               ingestStatus = IngestStatus.NotIngested
             )

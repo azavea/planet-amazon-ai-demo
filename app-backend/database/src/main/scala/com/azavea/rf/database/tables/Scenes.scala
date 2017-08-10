@@ -46,6 +46,7 @@ class Scenes(_tableTag: Tag) extends Table[Scene](_tableTag, "scenes")
   val cloudCover: Rep[Option[Float]] = column[Option[Float]]("cloud_cover", O.Default(None))
   val acquisitionDate: Rep[Option[java.sql.Timestamp]] = column[Option[java.sql.Timestamp]]("acquisition_date", O.Default(None))
   val thumbnailStatus: Rep[JobStatus] = column[JobStatus]("thumbnail_status")
+  val chipStatus: Rep[JobStatus] = column[JobStatus]("chip_status")
   val boundaryStatus: Rep[JobStatus] = column[JobStatus]("boundary_status")
   val sunAzimuth: Rep[Option[Float]] = column[Option[Float]]("sun_azimuth", O.Default(None))
   val sunElevation: Rep[Option[Float]] = column[Option[Float]]("sun_elevation", O.Default(None))
@@ -160,7 +161,7 @@ class Scenes(_tableTag: Tag) extends Table[Scene](_tableTag, "scenes")
     metadataFiles,
     ingestLocation,
     (cloudCover, acquisitionDate, sunAzimuth, sunElevation),
-    (thumbnailStatus, boundaryStatus, ingestStatus)
+    (thumbnailStatus, chipStatus, boundaryStatus, ingestStatus)
   ).shaped[SceneTupleType]
 
   def * = sceneShapedValue <> (toModel, toTuple)
@@ -428,7 +429,7 @@ object Scenes extends TableQuery(tag => new Scenes(tag)) with LazyLogging {
     } yield (
       updateScene.modifiedAt, updateScene.modifiedBy, updateScene.ingestSizeBytes,
       updateScene.datasource, updateScene.cloudCover,  updateScene.acquisitionDate,
-      updateScene.tags, updateScene.sceneMetadata, updateScene.thumbnailStatus,
+      updateScene.tags, updateScene.sceneMetadata, updateScene.thumbnailStatus, updateScene.chipStatus,
       updateScene.boundaryStatus, updateScene.ingestStatus, updateScene.name, updateScene.tileFootprint,
       updateScene.dataFootprint, updateScene.metadataFiles, updateScene.ingestLocation
     )
@@ -436,7 +437,7 @@ object Scenes extends TableQuery(tag => new Scenes(tag)) with LazyLogging {
       updateSceneQuery.update((
         updateTime, user.id, scene.ingestSizeBytes,
         scene.datasource, scene.filterFields.cloudCover, scene.filterFields.acquisitionDate,
-        scene.tags, scene.sceneMetadata, scene.statusFields.thumbnailStatus,
+        scene.tags, scene.sceneMetadata, scene.statusFields.thumbnailStatus, scene.statusFields.chipStatus,
         scene.statusFields.boundaryStatus, scene.statusFields.ingestStatus, scene.name, scene.tileFootprint,
         scene.dataFootprint, scene.metadataFiles, scene.ingestLocation
       ))

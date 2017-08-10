@@ -32,6 +32,7 @@ object SceneFilterFields {
 @JsonCodec
 case class SceneStatusFields(
   thumbnailStatus: JobStatus,
+  chipStatus: JobStatus,
   boundaryStatus: JobStatus,
   ingestStatus: IngestStatus
 )
@@ -40,6 +41,7 @@ object SceneStatusFields {
   def tupled = (SceneStatusFields.apply _).tupled
 
   type TupleType = (
+    JobStatus,
     JobStatus,
     JobStatus,
     IngestStatus
@@ -117,6 +119,7 @@ object Scene {
     metadataFiles: List[String],
     images: List[Image.Banded],
     thumbnails: List[Thumbnail.Identified],
+    chips: List[Chip.Identified],
     ingestLocation: Option[String],
     filterFields: SceneFilterFields = new SceneFilterFields(),
     statusFields: SceneStatusFields
