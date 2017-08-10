@@ -21,7 +21,7 @@ class Chips(_tableTag: Tag) extends Table[Chip](_tableTag, "chips")
                                          with TimestampFields
                                          with VisibilityField
 {
-  def * = (id, createdAt, modifiedAt, organizationId, x, y, scene, url, labelProbabilities) <> (Thumbnail.tupled, Thumbnail.unapply _)
+  def * = (id, createdAt, modifiedAt, organizationId, x, y, scene, url, labelProbabilities) <> (Chip.tupled, Chip.unapply _)
 
   val id: Rep[java.util.UUID] = column[java.util.UUID]("id", O.PrimaryKey)
   val createdAt: Rep[java.sql.Timestamp] = column[java.sql.Timestamp]("created_at")

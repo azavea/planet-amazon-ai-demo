@@ -6,6 +6,7 @@ import java.time.Instant
 
 import com.azavea.rf.datamodel._
 import io.circe.generic.JsonCodec
+// import io.circe._
 import geotrellis.proj4._
 import geotrellis.slick.Projected
 import geotrellis.vector.{Extent, Point, Polygon}
@@ -21,7 +22,8 @@ case class ThumbnailQueryParameters(
 case class ChipQueryParameters(
   x: Option[Int] = None,
   y: Option[Int] = None,
-  sceneId: Option[UUID] = None
+  sceneId: Option[UUID] = None,
+  filters: Option[String] = None
 )
 
 /** Case class for combined params for images */
