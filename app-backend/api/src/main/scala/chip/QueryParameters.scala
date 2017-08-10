@@ -16,6 +16,7 @@ trait ChipQueryParameterDirective extends QueryParametersCommon {
   val chipSpecificQueryParameters = parameters(
     'x.as[Int].?,
     'y.as[Int].?,
-    'sceneId.as[UUID].?
+    'sceneId.as[UUID].?,
+    'filters.as[Json].?
   ).as(ChipQueryParameters.apply _)
 }
