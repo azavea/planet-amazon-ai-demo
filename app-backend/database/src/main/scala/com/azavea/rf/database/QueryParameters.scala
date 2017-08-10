@@ -6,7 +6,6 @@ import java.time.Instant
 
 import com.azavea.rf.datamodel._
 import io.circe.generic.JsonCodec
-// import io.circe._
 import geotrellis.proj4._
 import geotrellis.slick.Projected
 import geotrellis.vector.{Extent, Point, Polygon}
