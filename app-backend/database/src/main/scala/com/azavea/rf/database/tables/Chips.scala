@@ -178,7 +178,7 @@ class ChipDefaultQuery[M, U, C[_]](chips: Chips.TableQuery) {
         chip.labelProbabilities.asInstanceOf[Json].as[Map[String, Float]] match {
           case Left(failure) => true.asInstanceOf[Rep[Boolean]] // shouldn't happen
           case Right(labelProbabilitiesMap) => {
-            decode[List[String]](chipParams.labels.get) match {
+            decode[List[String]](chipParams.labels.getOrElse("")) match {
               case Left(failure) => true.asInstanceOf[Rep[Boolean]] // shouldn't happen
               case Right(labels) => {
                 labels.map { label =>
