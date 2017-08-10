@@ -175,22 +175,16 @@ class ChipDefaultQuery[M, U, C[_]](chips: Chips.TableQuery) {
       .filter(_.y === chipParams.y)
       .filter(_.scene === chipParams.sceneId)
       .filter { chip =>
-        val labelProbabilities: Json = chip.labelProbabilities.asInstanceOf[Json]
-        labelProbabilities.as[Map[String, Float]] match {
-          case Left(decodingFailure) => true.asInstanceOf[Rep[Boolean]]
+        chip.labelProbabilities.asInstanceOf[Json].as[Map[String, Float]] match {
+          case Left(decodingFailure) => true.asInstanceOf[Rep[Boolean]] // shouldn't happen
           case Right(labelProbabilitiesMap) => {
-            decode[List[String]](chipParams.filters.get) match {
-              case Left(error) => true.asInstanceOf[Rep[Boolean]]
-              case Right(filters) => {
-                filters.map { label =>
-                  val labelProbability: Float = labelProbabilitiesMap.getOrElse(label, 0f)
-                  val labelThreshold: Float = 0.2f
-                  (labelProbability >= labelThreshold).asInstanceOf[Rep[Boolean]]
-                }
-                .reduceLeftOption(_ || _)
-                .getOrElse(true: Rep[Boolean])
-              }
+            chipParams.labels.map { label =>
+              val labelProbability: Float = labelProbabilitiesMap.getOrElse(label, 0f)
+              val labelThreshold: Float = 0.2f // how should we be storing labelThresholds?
+              (labelProbability >= labelThreshold).asInstanceOf[Rep[Boolean]]
             }
+            .reduceLeftOption(_ || _)
+            .getOrElse(true: Rep[Boolean])
           }
         }
       }
